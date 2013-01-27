@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="plib-characteristic-data:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="plib-characteristic-data.war">
+      <element id="artifact" artifact-name="plib-characteristic-data:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="plib-characteristic-data:war exploded">
+    <output-path>$PROJECT_DIR$/target/plib-characteristic-data</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="plib-characteristic-data/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="plib-characteristic-data" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.sun.faces:jsf-api:2.0.2" />
+          <element id="library" level="project" name="Maven: com.sun.faces:jsf-impl:2.0.2" />
+          <element id="library" level="project" name="Maven: javax.servlet:jstl:1.2" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
