@@ -2,6 +2,8 @@ target/
 target
 .idea
 .classpath
+.project
+.idea/*
 
 #java specific
 *.class
