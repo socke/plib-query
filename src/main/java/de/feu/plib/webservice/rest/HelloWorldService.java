@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 public class HelloWorldService {
 
 	@GET
-	@Path("/{param}")
+	@Path("/say/{param}")
 	public Response getMsg(@PathParam("param") String msg) {
 		String output = "Jersey say : " + msg;
 		return Response.status(200).entity(output).build();
@@ -24,18 +24,19 @@ public class HelloWorldService {
 //		return "Hello Jersey";
 //	}
 //
-//	// This method is called if XML is request
-//	@GET
-//	@Produces(MediaType.TEXT_XML)
-//	public String sayXMLHello() {
-//		return "<?xml version=\"1.0\"?>" + "<hello> Hello Jersey" + "</hello>";
-//	}
-//
-//	// This method is called if HTML is request
-//	@GET
-//	@Produces(MediaType.TEXT_HTML)
-//	public String sayHtmlHello() {
-//		return "<html> " + "<title>" + "Hello Jersey" + "</title>"
-//				+ "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
-//	}
+	// This method is called if XML is request
+	@GET
+	@Path("/xml/{param}")
+	@Produces(MediaType.APPLICATION_XML)
+	public String sayXMLHello(@PathParam("param") String msg) {
+		return "<?xml version=\"1.0\"?>" + "<hello> Hello Jersey" + msg + "</hello>";
+	}
+
+	// This method is called if HTML is request
+	@GET
+	@Path("/json/{param}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String sayJsonHello(@PathParam("param") String msg) {
+		return "{ hello : " + msg + "}";
+	}
 }
