@@ -4,6 +4,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 import java.io.Serializable;
 
@@ -20,7 +21,10 @@ public class HelloBean implements Serializable {
     private String name;
 
     public String getName() {
-        return name;
+//    	ApplicationContext context = ApplicationContextProvider.getApplicationContext();
+//    	HelloWorld myBean = (HelloWorld) context.getBean("helloWorld");
+        
+    	return name;
     }
     public void setName(String name) {
         this.name = name;
