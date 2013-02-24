@@ -1,10 +1,14 @@
 package de.feu.plib.dao;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -32,5 +36,24 @@ public class PlibDaoImpl implements PlibDao {
 			}
 		});
 		return companyNames;
+	}
+	
+	public String callProcedure() {
+		jdbcTemplate.execute(new CallableStatementCreator() {
+	        public CallableStatement createCallableStatement(Connection con) throws SQLException{
+	            CallableStatement cs = con.prepareCall("{call MY_STORED_PROCEDURE(?, ?, ?)}");
+	            //cs.setInt(1, ...); // first argument
+	            //cs.setInt(2, ...); // second argument
+	            //cs.setInt(3, ...); // third argument
+	            return cs;
+	        }
+	    },
+	    new CallableStatementCallback() {
+	        public Object doInCallableStatement(CallableStatement cs) throws SQLException{
+	            cs.execute();
+	            return null; // Whatever is returned here is returned from the jdbcTemplate.execute method
+	        }
+	    });
+		return null;
 	}
 }

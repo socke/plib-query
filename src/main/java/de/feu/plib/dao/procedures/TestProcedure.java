@@ -17,7 +17,7 @@ public class TestProcedure extends StoredProcedure {
 		super(ds, SQL);
 		declareParameter(new SqlOutParameter("param_out", Types.NUMERIC));
 		declareParameter(new SqlParameter("param_in", Types.NUMERIC));
-		setFunction(true);// you must set this as it distinguishes it from a sproc
+		//setFunction(true);// you must set this as it distinguishes it from a sproc
 		compile();
 	}
 
