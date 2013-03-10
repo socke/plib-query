@@ -6,6 +6,7 @@ target
 .idea/*
 .project
 .settings
+.settings/
 
 #java specific
 *.class
