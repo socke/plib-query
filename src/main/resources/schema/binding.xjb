@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bindings xmlns="http://java.sun.com/xml/ns/jaxb"
-                xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
-                xsi:schemaLocation="
-http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd"
-    version="2.1">
+<!--
+This binding file overrides the usage of the namespaces as package names. As the iso-xsd files have 
+specific namespace names like namespace="urn:iso:std:iso:ts:29002:-5:ed-1:tech:xml-schema:identifier 
+is is not possible to create such package names. You will receive an error when trying to generate that with
+xjc. 
+Now when generating with maven it works and all files will be put into the package name de.feu.plib.jaxb 
+-->
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
+  <bindings schemaLocation="query.xsd">
     <schemaBindings>
-        <package name="de.feu.plib.jaxb" />
+      <package name="de.feu.plib.xml"/>
     </schemaBindings>
+  </bindings>
+  
+  
 </bindings>
