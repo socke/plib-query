@@ -4,6 +4,8 @@ target
 .classpath
 .project
 .idea/*
+.project
+.settings
 
 #java specific
 *.class
