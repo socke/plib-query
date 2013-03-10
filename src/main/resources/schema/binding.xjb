@@ -4,14 +4,44 @@ This binding file overrides the usage of the namespaces as package names. As the
 specific namespace names like namespace="urn:iso:std:iso:ts:29002:-5:ed-1:tech:xml-schema:identifier 
 is is not possible to create such package names. You will receive an error when trying to generate that with
 xjc. 
-Now when generating with maven it works and all files will be put into the package name de.feu.plib.jaxb 
+Now when generating with maven it works and all files will be put into the package name de.feu.plib.xml
+
+The generated java classes will be created in separate packages per xsd-file, e.g.
+
+query.xsd -> de.feu.plib.xml.query
+basic.xsd -> de.feu.plib.xml.basic
+...
+and so forth 
+
+Via console you normally have to type something like:
+xjc -b binding.xjb -d gen-src query.xsd
 -->
-<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
-  <bindings schemaLocation="query.xsd">
-    <schemaBindings>
-      <package name="de.feu.plib.xml"/>
-    </schemaBindings>
-  </bindings>
-  
-  
-</bindings>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               jaxb:version="2.0">
+  <jaxb:bindings schemaLocation="query.xsd" node="/xsd:schema">
+    <jaxb:schemaBindings>
+      <jaxb:package name="de.feu.plib.xml.query" />
+    </jaxb:schemaBindings>
+  </jaxb:bindings>
+  <jaxb:bindings schemaLocation="basic.xsd" node="/xsd:schema">
+    <jaxb:schemaBindings>
+      <jaxb:package name="de.feu.plib.xml.basic" />
+    </jaxb:schemaBindings>
+  </jaxb:bindings>
+  <jaxb:bindings schemaLocation="catalogue.xsd" node="/xsd:schema">
+    <jaxb:schemaBindings>
+      <jaxb:package name="de.feu.plib.xml.catalogue" />
+    </jaxb:schemaBindings>
+  </jaxb:bindings>
+  <jaxb:bindings schemaLocation="identifier.xsd" node="/xsd:schema">
+    <jaxb:schemaBindings>
+      <jaxb:package name="de.feu.plib.xml.identifier" />
+    </jaxb:schemaBindings>
+  </jaxb:bindings>
+  <jaxb:bindings schemaLocation="value.xsd" node="/xsd:schema">
+    <jaxb:schemaBindings>
+      <jaxb:package name="de.feu.plib.xml.value" />
+    </jaxb:schemaBindings>
+  </jaxb:bindings>          
+</jaxb:bindings>

@@ -104,8 +104,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <version>0.8.0</version>
                 <configuration>
                     <schemaDirectory>src/main/resources/schema</schemaDirectory>
+<!-- we do not use bindingDirectory as if we put the binding.xjb in the schema directory it will be taken -->
 <!--                     <bindingDirectory>src/main/resources/binding</bindingDirectory> -->
-                    <generatePackage>de.feu.plib.jaxb</generatePackage>
+
+<!--  Setting the generated package in pom will override what you set in binding.xjb file, thus commented out -->
+<!--                     <generatePackage>de.feu.plib.jaxb</generatePackage> -->
                     <strict>false</strict>
                     <extension>true</extension>
                     <plugins>
