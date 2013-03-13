@@ -1,6 +1,8 @@
 package de.feu.plib.webservice.rest;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -39,4 +41,14 @@ public class HelloWorldService {
 	public String sayJsonHello(@PathParam("param") String msg) {
 		return "{ hello : " + msg + "}";
 	}
+	
+    @POST  
+    @Path("/xmltest")  
+    @Consumes("application/xml")  
+    @Produces(MediaType.TEXT_PLAIN)  
+    public String postOnlyXML(String incomingXML) {  
+        System.out.println("incomingXML :" + incomingXML);  
+       // here is the XML file....enjoy.  
+        return "Return your string mesage";  
+    } 	
 }
