@@ -98,7 +98,9 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
-            
+            <!-- This plugin helps to add a new source folder from the generated sources 
+                we need that as we generate the classes for the XSD files. 
+            -->
             <plugin>
 			    <groupId>org.codehaus.mojo</groupId>
 			    <artifactId>build-helper-maven-plugin</artifactId>

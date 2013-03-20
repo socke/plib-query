@@ -50,7 +50,7 @@ xjc -b binding.xjb -d gen-src query.xsd
          <!-- let the classes implement serialiseable -->
         <jaxb:serializable uid="1" />
           <!-- let the classes extend own abstract class for providing some extra functionality for each one -->
-        <xjc:superClass name="de.feu.plib.xml.AbstractXMLType" />
+ <!--       <xjc:superClass name="de.feu.plib.xml.AbstractXMLType" /> -->
      </jaxb:globalBindings>  
      
             
