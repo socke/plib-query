@@ -1,72 +1,46 @@
-/**
- * 
- */
 package de.feu.plib.xml;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.log4j.Logger;
-
-import de.feu.plib.xml.catalogue.CatalogueType;
-import de.feu.plib.xml.catalogue.ItemType;
-import de.feu.plib.xml.query.QueryType;
-
 /**
+ * Capsulates the marshalling and unmarshalling of XML files. You can use it for any type of JAXB
+ * annotated files as this is a generic un-/marshaller.
  * 
  */
-public class XMLMarshaller {
-    
-    /** Logger instance */
-    static final Logger LOGGER = Logger.getLogger(XMLMarshaller.class);
-    
+public interface XMLMarshaller {
+
     /**
-     * Unmarshalls the given xmlString. Note that we use {@link StreamSource}
-     * with a {@link StringReader} and then unmarshalling that with jaxb. The
-     * big benefit is that we do not need an @XMLRootElement annotation on the
-     * xml file which will normally not be generated. Great is that we do not
-     * need casting.
+     * <p>
+     * This method is generic, so can be used to convert an arbitrary XML file given as string to a
+     * corresponding class. You have to pass that expected class type as parameter. This is
+     * necessary as we cannot grab the concrete type from a generic type. The compiler throws the
+     * type away.</p>
      * 
-     * @param xmlString
-     *            the given string which holds the xml
+     * <p><strong>Usage example:</strong></p>
+     * 
+     * <pre>
+     * QueryType queryType = marshaller.unmarshallXML(&quot;&lt;query&gt;...&lt;/query&gt;&quot;, QueryType.class);
+     * </pre>
+     * 
+     * @param <T> the type of the class you expect to get returned
+     * 
+     * @param xmlString the given string which holds the xml
+     * @param clazz the class of the expected type you assert you get returned by your xml.
+     * 
      */
-    public QueryType unmarshallXML(String xmlString) {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(QueryType.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            Source xmlSource = new StreamSource(new java.io.StringReader(xmlString));
-            JAXBElement<QueryType> queryElement = jaxbUnmarshaller.unmarshal(xmlSource, QueryType.class);
-            QueryType query = queryElement.getValue();
-            LOGGER.info(query);
-            return query;
-        } catch (JAXBException e) {
-            throw new RuntimeException("Error during unmarshalling of XML.", e.getCause());
-        }
-    }
+    public <T> T unmarshallXML(String xmlString, Class<T> clazz);
 
-    public String marshall(CatalogueType catalogue) {
-        JAXBContext context;
-        StringWriter writer = new StringWriter();
-        try {
-            context = JAXBContext.newInstance(CatalogueType.class);
-            Marshaller m = context.createMarshaller();
-            
-            m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    /**
+     * Marshalls the given type parameter to an corresponding xml.
+     * 
+     * <p><strong>Usage example:</strong></p>
+     * <pre>
+     * String catalogue = marshaller.marshall(new CatalogueItem());
+     * </pre>
+     * 
+     * @param <T> the type of the given
+     * 
+     * @param catalogue type to convert to xml
+     * @return the string holding the converted xml
+     */
+    public <T> String marshall(T catalogue);
 
-            m.marshal(catalogue, writer);
-
-        } catch (JAXBException e) {
-            LOGGER.error(e);
-        }
-        return writer.toString();
-    }
 }

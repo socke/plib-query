@@ -10,11 +10,12 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import de.feu.plib.HelloWorld;
 import de.feu.plib.xml.XMLMarshaller;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
+import de.feu.plib.xml.catalogue.PropertyValueType;
 import de.feu.plib.xml.query.QueryType;
+import de.feu.plib.xml.value.BooleanValueType;
 
 /**
  * This is the Query Webservice based on REST. The basepath is /ws which means in case of having the
@@ -41,8 +42,11 @@ public class QueryService {
      * As this is the main entry point, this is what we are doing:
      * <ol>
      * <li>Read the incoming xml and unmarshall it to a {@link QueryType} Object.</li>
-     * <li>Pass that object to the Processor, it decides what it is and is responsible for futher
-     * handling</li>
+     * <li>Pass that object to the Processor, it decides what kind of query it is and who is responsible for 
+     * further handling</li>
+     * <li>After returning from the processor the method returns the catalogue xml file holding all items as
+     * response to the query</li>
+     * </ol>
      * 
      * @param queryXML
      *            contains the query xml file
@@ -55,7 +59,7 @@ public class QueryService {
     public String query(String queryXML) {
         LOGGER.info("Incoming query XML content :" + queryXML);
         marshaller = getMarshaller();
-        QueryType queryType = marshaller.unmarshallXML(queryXML);
+        QueryType queryType = marshaller.unmarshallXML(queryXML, QueryType.class);
 
         String catalogue = marshaller.marshall(createCatalogue());
         return catalogue;
@@ -64,6 +68,12 @@ public class QueryService {
     private CatalogueType createCatalogue() {
         ItemType item = new ItemType();
         item.setClassRef("abc");
+        PropertyValueType propertyValueType = new PropertyValueType();
+        
+        BooleanValueType bvt = new BooleanValueType();
+        bvt.setValue(true);
+        propertyValueType.setBooleanValue(bvt);
+        item.getPropertyValue().add(propertyValueType);
         CatalogueType catalogue = new CatalogueType();
         catalogue.getItem().add(item);
         
