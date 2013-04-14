@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<qy:characteristic_data_query_expression xmlns:basic="urn:iso:std:iso:ts:29002:-4:ed-1:tech:xml-schema:basic" xmlns:cat="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:catalogue" xmlns:id="urn:iso:std:iso:ts:29002:-5:ed-1:tech:xml-schema:identifier" xmlns:qy="urn:iso:std:iso:ts:29002:-31:ed-1:tech:xml-schema:query" xmlns:val="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:value" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:iso:std:iso:ts:29002:-31:ed-1:tech:xml-schema:query query.xsd urn:iso:std:iso:ts:29002:-5:ed-1:tech:xml-schema:identifier identifier.xsd urn:iso:std:iso:ts:29002:-4:ed-1:tech:xml-schema:basic basic.xsd urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:value value.xsd urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:catalogue catalogue.xsd ">
+  <qy:cardinality>
+    <qy:property_reference property_ref=""/>
+  </qy:cardinality>
+</qy:characteristic_data_query_expression>
