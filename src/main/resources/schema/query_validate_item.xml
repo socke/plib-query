@@ -4,7 +4,7 @@
 	<qy:property_ref>0000-.</qy:property_ref>	
 	<cat:item class_ref="0000-.">
 		<cat:property_value property_ref="0000-.">
-			<val:string_value></val:string_value>
+			<val:integer_value></val:integer_value>
 		</cat:property_value>
 	</cat:item>
 </qy:query>
