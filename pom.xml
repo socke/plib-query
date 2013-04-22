@@ -127,7 +127,7 @@
                 <configuration>
                     <schemaDirectory>src/main/resources/schema</schemaDirectory>
                     <generateDirectory>src/main/generated</generateDirectory>
-                    <removeOldOutput>false</removeOldOutput>
+                    <removeOldOutput>true</removeOldOutput>
 <!-- we do not use bindingDirectory as if we put the binding.xjb in the schema directory it will be taken -->
 <!--                     <bindingDirectory>src/main/resources/binding</bindingDirectory> -->
 

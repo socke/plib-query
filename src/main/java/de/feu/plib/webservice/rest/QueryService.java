@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import de.feu.plib.business.QueryProcessor;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -29,10 +30,23 @@ import de.feu.plib.xml.value.BooleanValueType;
 public class QueryService {
 
     /** Marshaller instance used for converting xml to objects and vice versa */
-    XMLMarshaller marshaller;
+    private XMLMarshaller marshaller;
+
+    /** Query processor instance */
+    private QueryProcessor queryProcessor;
 
     /** Logger instance */
     private static final Logger LOGGER = Logger.getLogger(QueryService.class);
+
+    /** Application context for receiving beans */
+    private ApplicationContext context;
+
+    /** Constructor which ensures correct instantiation of needed beans */
+    public QueryService() {
+        this.context = initializeContext();
+        this.marshaller = getMarshaller();
+        this.queryProcessor = getQueryProcessor();
+    }
 
     /**
      * Entry point which takes the xml string and after that starts the processing of the xml. The
@@ -42,7 +56,7 @@ public class QueryService {
      * As this is the main entry point, this is what we are doing:
      * <ol>
      * <li>Read the incoming xml and unmarshall it to a {@link QueryType} Object.</li>
-     * <li>Pass that object to the Processor, it decides what kind of query it is and who is responsible for 
+     * <li>Pass that object to the QueryProcessor, it decides what kind of query it is and who is responsible for
      * further handling</li>
      * <li>After returning from the processor the method returns the catalogue xml file holding all items as
      * response to the query</li>
@@ -58,33 +72,27 @@ public class QueryService {
     @Produces(MediaType.APPLICATION_XML)
     public String query(String queryXML) {
         LOGGER.info("Incoming query XML content :" + queryXML);
-        marshaller = getMarshaller();
         QueryType queryType = marshaller.unmarshallXML(queryXML, QueryType.class);
 
-        String catalogue = marshaller.marshall(createCatalogue());
-        return catalogue;
+        CatalogueType catalogue = queryProcessor.analyse(queryType);
+        String marshalledCatalogue = marshaller.marshall(catalogue);
+        LOGGER.info("Marshalled catalogue: " + marshalledCatalogue);
+        return marshalledCatalogue;
     }
 
-    private CatalogueType createCatalogue() {
-        ItemType item = new ItemType();
-        item.setClassRef("abc");
-        PropertyValueType propertyValueType = new PropertyValueType();
-        
-        BooleanValueType bvt = new BooleanValueType();
-        bvt.setValue(true);
-        propertyValueType.setBooleanValue(bvt);
-        item.getPropertyValue().add(propertyValueType);
-        CatalogueType catalogue = new CatalogueType();
-        catalogue.getItem().add(item);
-        
-        return catalogue;
-    }
-    
     private XMLMarshaller getMarshaller() {
-        ApplicationContext context = new ClassPathXmlApplicationContext(
-                "beans.xml");
         XMLMarshaller marshaller = (XMLMarshaller) context.getBean("xml.marshaller");
         return marshaller;
+    }
+
+    private ClassPathXmlApplicationContext initializeContext() {
+        return new ClassPathXmlApplicationContext(
+                "beans.xml");
+    }
+
+    private QueryProcessor getQueryProcessor() {
+        QueryProcessor queryProcessor =  (QueryProcessor) context.getBean("queryProcessor");
+        return queryProcessor;
     }
 
 }
