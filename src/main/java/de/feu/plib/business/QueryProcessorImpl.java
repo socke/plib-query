@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.feu.plib.business;
 
@@ -9,22 +9,34 @@ import de.feu.plib.xml.catalogue.PropertyValueType;
 import de.feu.plib.xml.query.QueryType;
 import de.feu.plib.xml.value.BooleanValueType;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 
 /**
- * 
+ *
  */
 public class QueryProcessorImpl implements QueryProcessor {
+
+    /**
+     * Logger instance
+     */
+    private static Logger LOGGER = Logger.getLogger(QueryProcessorImpl.class);
 
     @Override
     public CatalogueType analyse(QueryType query) {
         if (isSimpleQuery(query)) {
-          return createCatalogue();
+            // we need to read out what was filled
+            // check what kind of simple query it is
+            // does it have only a irdi?
+            // are properties selected?
+            // do we have a known item given?
+            return createCatalogue();
         }
         if (isParametricQuery(query)) {
 
         }
         // if it is neither a simple nor a parametric query, it is not supported, thus return emtpy result.
+        LOGGER.warn("No query type recognized - empty catalogue will be returned");
         return emtpyCatalogue();
     }
 
@@ -39,13 +51,16 @@ public class QueryProcessorImpl implements QueryProcessor {
     /**
      * The query is only simple query, if we have at least a class reference given and if we do not have a
      * characteristic data query expression.
+     *
      * @param query the query
      * @return true if it is a simple query expression.
      */
     protected boolean isSimpleQuery(QueryType query) {
-        if (StringUtils.isNotEmpty(query.getClassRef()) && CollectionUtils.isEmpty(query.getCharacteristicDataQueryExpression()) ) {
-           return true;
+        if (StringUtils.isNotEmpty(query.getClassRef()) && CollectionUtils.isEmpty(query.getCharacteristicDataQueryExpression())) {
+            LOGGER.info("Is simple query - query: " + query);
+            return true;
         }
+        LOGGER.info("Is not a simple query - query: " + query);
         return false;
     }
 
