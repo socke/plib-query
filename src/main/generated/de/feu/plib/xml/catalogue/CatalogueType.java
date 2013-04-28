@@ -44,7 +44,6 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 @XmlType(name = "catalogue_Type", propOrder = {
     "item"
 })
-@XmlRootElement(name = "catalogue")
 public class CatalogueType
     implements Serializable, ToString
 {
