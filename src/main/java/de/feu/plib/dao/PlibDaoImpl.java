@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import de.feu.plib.business.analyser.EnrichedQuery;
+import de.feu.plib.xml.catalogue.CatalogueType;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -37,8 +39,13 @@ public class PlibDaoImpl implements PlibDao {
 		});
 		return companyNames;
 	}
-	
-	public String callProcedure() {
+
+    @Override
+    public CatalogueType loadObjectsFrom(EnrichedQuery enrichedQuery) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String callProcedure() {
 		jdbcTemplate.execute(new CallableStatementCreator() {
 	        public CallableStatement createCallableStatement(Connection con) throws SQLException{
 	            CallableStatement cs = con.prepareCall("{call MY_STORED_PROCEDURE(?, ?, ?)}");

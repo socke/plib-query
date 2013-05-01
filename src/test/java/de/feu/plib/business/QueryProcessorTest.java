@@ -15,14 +15,14 @@ import static org.junit.Assert.assertTrue;
 /**
  * TODO: document file
  */
-public class QueryProcessorImplTest extends AbstractXMLTest {
+public class QueryProcessorTest extends AbstractXMLTest {
 
-    private QueryProcessorImpl queryProcessor;
+    private QueryProcessor queryProcessor;
     private XMLMarshaller marshaller;
 
     @Before
     public void setUp() throws Exception {
-        queryProcessor = new QueryProcessorImpl();
+        queryProcessor = new QueryProcessor();
         marshaller = new XMLMarshallerImpl();
     }
 
@@ -69,5 +69,18 @@ public class QueryProcessorImplTest extends AbstractXMLTest {
         QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi_multiple_properties.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
         assertEquals(4, queryType.getPropertyRef().size());
+    }
+
+    @Test
+    public void shouldBeSimpleQueryWithGivenItem() throws Exception {
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi_item.xml"), QueryType.class);
+        assertTrue(queryProcessor.isSimpleQuery(queryType));
+    }
+
+    @Test
+    public void shouldBeParametricQueryWithRangeExpression() throws Exception {
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_parametric_range.xml"), QueryType.class);
+        assertTrue(queryProcessor.isParametricQuery(queryType));
+        assertFalse(queryProcessor.isSimpleQuery(queryType));
     }
 }

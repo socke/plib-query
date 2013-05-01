@@ -25,5 +25,12 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 	<bean id="xml.marshaller" class="de.feu.plib.xml.XMLMarshallerImpl">
 	</bean>
 
-    <bean id="queryProcessor" class="de.feu.plib.business.QueryProcessorImpl"></bean>
+    <bean id="queryPipe" class="de.feu.plib.business.QueryProcessor">
+        <property name="simpleQueryFilter" ref="simpleQueryAnalyser" />
+        <property name="parametricQueryFilter" ref="parametricQueryAnalyser" />
+    </bean>
+
+    <bean id="simpleQueryAnalyser" class="de.feu.plib.business.analyser.SimpleQueryFilter" />
+
+    <bean id="parametricQueryAnalyser" class="de.feu.plib.business.analyser.ParametricQueryFilter" />
 </beans>

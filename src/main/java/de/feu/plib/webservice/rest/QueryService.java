@@ -6,17 +6,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import de.feu.plib.business.QueryProcessor;
+import de.feu.plib.business.QueryPipe;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import de.feu.plib.xml.XMLMarshaller;
 import de.feu.plib.xml.catalogue.CatalogueType;
-import de.feu.plib.xml.catalogue.ItemType;
-import de.feu.plib.xml.catalogue.PropertyValueType;
 import de.feu.plib.xml.query.QueryType;
-import de.feu.plib.xml.value.BooleanValueType;
 
 /**
  * This is the Query Webservice based on REST. The basepath is /ws which means in case of having the
@@ -33,7 +30,7 @@ public class QueryService {
     private XMLMarshaller marshaller;
 
     /** Query processor instance */
-    private QueryProcessor queryProcessor;
+    private QueryPipe queryPipe;
 
     /** Logger instance */
     private static final Logger LOGGER = Logger.getLogger(QueryService.class);
@@ -45,7 +42,7 @@ public class QueryService {
     public QueryService() {
         this.context = initializeContext();
         this.marshaller = getMarshaller();
-        this.queryProcessor = getQueryProcessor();
+        this.queryPipe = getQueryPipe();
     }
 
     /**
@@ -56,7 +53,7 @@ public class QueryService {
      * As this is the main entry point, this is what we are doing:
      * <ol>
      * <li>Read the incoming xml and unmarshall it to a {@link QueryType} Object.</li>
-     * <li>Pass that object to the QueryProcessor, it decides what kind of query it is and who is responsible for
+     * <li>Pass that object to the QueryPipe, it decides what kind of query it is and who is responsible for
      * further handling</li>
      * <li>After returning from the processor the method returns the catalogue xml file holding all items as
      * response to the query</li>
@@ -74,7 +71,7 @@ public class QueryService {
         LOGGER.info("Incoming query XML content :" + queryXML);
         QueryType queryType = marshaller.unmarshallXML(queryXML, QueryType.class);
 
-        CatalogueType catalogue = queryProcessor.analyse(queryType);
+        CatalogueType catalogue = queryPipe.filter(queryType);
         String marshalledCatalogue = marshaller.marshall(catalogue);
         LOGGER.info("Marshalled catalogue: " + marshalledCatalogue);
         return marshalledCatalogue;
@@ -90,9 +87,9 @@ public class QueryService {
                 "beans.xml");
     }
 
-    private QueryProcessor getQueryProcessor() {
-        QueryProcessor queryProcessor =  (QueryProcessor) context.getBean("queryProcessor");
-        return queryProcessor;
+    private QueryPipe getQueryPipe() {
+        QueryPipe queryPipe =  (QueryPipe) context.getBean("queryProcessor");
+        return queryPipe;
     }
 
 }

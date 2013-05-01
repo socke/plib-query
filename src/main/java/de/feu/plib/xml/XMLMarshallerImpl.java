@@ -33,14 +33,10 @@ import org.xml.sax.SAXException;
  */
 public class XMLMarshallerImpl implements XMLMarshaller {
 
-    /**
-     * location of the query schema file
-     */
+    /** location of the query schema file */
     private static final String QUERY_XSD = "/schema/query.xsd";
 
-    /**
-     * Logger instance
-     */
+    /** Logger instance */
     private static final Logger LOGGER = Logger.getLogger(XMLMarshallerImpl.class);
 
     /**
