@@ -13,7 +13,7 @@ import org.springframework.jdbc.object.StoredProcedure;
 
 public class TestProcedure extends StoredProcedure {
 
-    private static final String SQL = "GET_DO_TABLE";
+    private static final String SQL = "PACK_PROPERTY.GET_DO_TABLE";
 
     /**
      * Logger instance
@@ -22,11 +22,11 @@ public class TestProcedure extends StoredProcedure {
 
 	public TestProcedure(DataSource ds) {
 		super(ds, SQL);
-		declareParameter(new SqlOutParameter("loc_do_table", Types.VARCHAR));
+		//declareParameter(new SqlOutParameter("loc_do_table", Types.VARCHAR));
 		declareParameter(new SqlOutParameter("message", Types.VARCHAR));
-		declareParameter(new SqlOutParameter("anz_dse", Types.NUMERIC));
+		//declareParameter(new SqlOutParameter("anz_dse", Types.NUMERIC));
 		declareParameter(new SqlParameter("property_id", Types.NUMERIC));
-		declareParameter(new SqlParameter("is_cvp", Types.NUMERIC));
+		//declareParameter(new SqlParameter("is_cvp", Types.NUMERIC));
 		//setFunction(true);// you must set this as it distinguishes it from a sproc
 		compile();
 	}
@@ -35,6 +35,17 @@ public class TestProcedure extends StoredProcedure {
 		Map in = new HashMap();
 		in.put("property_id", propertyId);
         in.put("is_cvp", is_cvp);
+		Map out = execute(in);
+		if (!out.isEmpty())
+			return out.get("message").toString();
+		else
+			return null;
+	}
+
+    public String execute(Long propertyId) {
+		Map in = new HashMap();
+		in.put("property_id", propertyId);
+        //in.put("is_cvp", is_cvp);
 		Map out = execute(in);
 		if (!out.isEmpty())
 			return out.get("message").toString();

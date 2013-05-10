@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,16 @@ public class TestProcedureTest {
 
 	@Test
 	public void testProcedureCall() {
+
+        TestProcedure sp = new TestProcedure(ds);
+        //String i = sp.execute(1l, 1l);
+        String i = sp.execute(1l);
+        assertEquals("test", i);
+
+	}
+    @Test
+    @Ignore
+	public void testProcedureTwoParametersCall() {
 
         TestProcedure sp = new TestProcedure(ds);
         String i = sp.execute(1l, 1l);

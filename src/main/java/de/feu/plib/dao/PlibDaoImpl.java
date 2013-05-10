@@ -7,26 +7,53 @@ import java.sql.SQLException;
 import java.util.List;
 
 import de.feu.plib.business.analyser.EnrichedQuery;
+import de.feu.plib.business.analyser.Irdi;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class PlibDaoImpl implements PlibDao {
 
 	/** Logger instance */
 	static final Logger LOGGER = Logger.getLogger(PlibDaoImpl.class);
 	
 	private static final String SELECT = "SELECT name FROM DE_COMPANY";
+
+    private static final String CHECK_IRDI_SQL = "SELECT COUNT(*) FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?";
+
+    @Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	@SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
+    @Override
+    public boolean doObjectsExistsWithThis(Irdi irdi) {
+        int numberOfObjects = getNumberOfObjectsOfIrdi(irdi);
+        if (numberOfObjects > 0) {
+           return true;
+        }
+        return false;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getNumberOfObjectsOfIrdi(Irdi irdi) {
+        int numberOfObjects = 0;
+        numberOfObjects = jdbcTemplate.queryForInt(CHECK_IRDI_SQL, new Object[]{ irdi.getIrdi() });
+        LOGGER.info("numberOfObjects: " + numberOfObjects);
+        return numberOfObjects;
+    }
+
+    @SuppressWarnings("unchecked")
 	@Override
 	public List<String> getCompanyNames() {
 		@SuppressWarnings("rawtypes")
