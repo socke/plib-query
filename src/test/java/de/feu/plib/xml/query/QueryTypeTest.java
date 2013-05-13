@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * TODO check test, maybe we can delete that.
+ */
 public class QueryTypeTest {
 
 	@Test

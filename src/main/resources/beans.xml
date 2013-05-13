@@ -45,8 +45,6 @@
 	</bean>
 
     <bean id="queryPipe" class="de.feu.plib.business.QueryProcessor">
-        <property name="simpleQueryFilter" ref="simpleQueryAnalyser" />
-        <property name="parametricQueryFilter" ref="parametricQueryAnalyser" />
     </bean>
 
     <bean id="simpleQueryAnalyser" class="de.feu.plib.business.analyser.SimpleQueryFilter" />

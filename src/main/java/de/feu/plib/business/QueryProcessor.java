@@ -11,6 +11,9 @@ import de.feu.plib.xml.query.QueryType;
 import de.feu.plib.xml.value.BooleanValueType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -24,10 +27,13 @@ public class QueryProcessor implements QueryPipe {
      */
     private static Logger LOGGER = Logger.getLogger(QueryProcessor.class);
 
+    @Autowired
+    @Qualifier(value = "simpleQueryAnalyser")
     private QueryFilter simpleQueryFilter;
 
+    @Autowired
+    @Qualifier(value = "parametricQueryAnalyser")
     private QueryFilter parametricQueryFilter;
-
 
     @Override
     public CatalogueType filter(QueryType query) {
