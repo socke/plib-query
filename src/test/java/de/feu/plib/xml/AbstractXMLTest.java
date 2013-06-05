@@ -1,6 +1,10 @@
 package de.feu.plib.xml;
 
+import com.sun.xml.internal.rngom.binary.AfterPattern;
+import de.feu.plib.business.QueryProcessor;
 import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,10 +16,24 @@ import java.io.InputStreamReader;
  */
 public class AbstractXMLTest {
 
+    protected XMLMarshaller marshaller;
+
     /**
      * Logger instance
      */
     private static Logger LOGGER = Logger.getLogger(AbstractXMLTest.class);
+
+
+    @Before
+    public void setUp() {
+        marshaller = new XMLMarshallerImpl();
+    }
+
+    @After
+    public void tearDown() {
+        marshaller = null;
+    }
+
     /**
      * Reads the xml file from given filenlame
      *

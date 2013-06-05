@@ -4,6 +4,7 @@ import de.feu.plib.business.analyser.EnrichedQuery;
 import de.feu.plib.business.analyser.Irdi;
 import de.feu.plib.business.analyser.QueryKind;
 import de.feu.plib.xml.catalogue.CatalogueType;
+import de.feu.plib.xml.catalogue.PropertyValueType;
 
 import java.util.List;
 
@@ -27,6 +28,11 @@ public class PlibDaoFake implements PlibDao {
     }
 
     @Override
+    public List<String> readExternalProductIdsBy(Irdi irdi) {
+        return null;
+    }
+
+    @Override
     public CatalogueType loadObjectsFrom(EnrichedQuery enrichedQuery) {
         if (QueryKind.SIMPLE.equals(enrichedQuery.getType())) {
 
@@ -34,6 +40,11 @@ public class PlibDaoFake implements PlibDao {
         if (QueryKind.PARAMETRIC.equals(enrichedQuery.getType())) {
 
         }
+        return null;
+    }
+
+    @Override
+    public List<PropertyValueType> loadStringPropertiesByExternalIds(List<String> externalIds) {
         return null;
     }
 }

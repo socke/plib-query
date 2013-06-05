@@ -7,6 +7,7 @@ import de.feu.plib.xml.query.QueryType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,27 +19,17 @@ import static org.junit.Assert.assertTrue;
 public class QueryProcessorTest extends AbstractXMLTest {
 
     private QueryProcessor queryProcessor;
-    private XMLMarshaller marshaller;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        super.setUp();
         queryProcessor = new QueryProcessor();
-        marshaller = new XMLMarshallerImpl();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
+        super.tearDown();
         queryProcessor = null;
-    }
-
-    @Test
-    public void testAnalyse() throws Exception {
-
-    }
-
-    @Test
-    public void testIsParametricQuery() throws Exception {
-
     }
 
     @Test
@@ -52,7 +43,7 @@ public class QueryProcessorTest extends AbstractXMLTest {
         assertTrue(queryProcessor.isSimpleQuery(queryType));
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionWithIllegalIrdi() throws Exception {
         QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi_illegal.xml"), QueryType.class);
         queryProcessor.isSimpleQuery(queryType);
