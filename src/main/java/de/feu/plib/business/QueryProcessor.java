@@ -3,7 +3,9 @@
  */
 package de.feu.plib.business;
 
+import de.feu.plib.business.analyser.EnrichedQuery;
 import de.feu.plib.business.analyser.QueryFilter;
+import de.feu.plib.business.handler.SimpleQueryService;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
 import de.feu.plib.xml.catalogue.PropertyValueType;
@@ -11,7 +13,6 @@ import de.feu.plib.xml.query.QueryType;
 import de.feu.plib.xml.value.BooleanValueType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
@@ -35,12 +36,18 @@ public class QueryProcessor implements QueryPipe {
     @Qualifier(value = "parametricQueryAnalyser")
     private QueryFilter parametricQueryFilter;
 
+    @Autowired
+    private SimpleQueryService simpleQueryService;
+
     @Override
     public CatalogueType filter(QueryType query) {
-        // TODO use later a QueryFilter class
         if (isSimpleQuery(query)) {
 
-            simpleQueryFilter.filter(query);
+            EnrichedQuery enrichedQuery = simpleQueryFilter.filter(query);
+
+            simpleQueryService.setEnrichedQuery(enrichedQuery);
+
+            CatalogueType catalogueType = simpleQueryService.loadData();
 
             // we need to read out what was filled, check what kind of simple query it is
             // does it have only an irdi? are properties selected?

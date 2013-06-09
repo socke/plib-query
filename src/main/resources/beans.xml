@@ -38,9 +38,11 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="templateTest" class="de.feu.plib.dao.PlibDaoImpl">
+	<bean id="plibDao" class="de.feu.plib.dao.PlibDaoImpl">
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 	</bean>
+
+
 	<bean id="xml.marshaller" class="de.feu.plib.xml.XMLMarshallerImpl">
 	</bean>
 
@@ -50,4 +52,7 @@
     <bean id="simpleQueryAnalyser" class="de.feu.plib.business.analyser.SimpleQueryFilter" />
 
     <bean id="parametricQueryAnalyser" class="de.feu.plib.business.analyser.ParametricQueryFilter" />
+
+    <bean id="simpleQueryService" class="de.feu.plib.business.handler.SimpleQueryService" />
+
 </beans>

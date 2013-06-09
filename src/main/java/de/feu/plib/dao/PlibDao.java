@@ -6,6 +6,7 @@ import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.PropertyValueType;
 import de.feu.plib.xml.query.QueryType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PlibDao {
@@ -40,7 +41,7 @@ public interface PlibDao {
      * @param irdi of the class where
      * @return list containing external product ids.
      */
-    List<String> readExternalProductIdsBy(Irdi irdi);
+    List<BigDecimal> readExternalProductIdsBy(Irdi irdi);
 
     /**
      * Loads the Objects from the database by the {@link EnrichedQuery}.
@@ -58,7 +59,7 @@ public interface PlibDao {
      * @param externalIds the external ids for which the string properties should be loaded
      * @return a list of propertyvaluetype
      */
-    List<PropertyValueType> loadStringPropertiesByExternalIds(List<String> externalIds);
+    List<List<PropertyValueType>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds);
 
     /**
      * Loads the number Properties by given external ids in the string list.

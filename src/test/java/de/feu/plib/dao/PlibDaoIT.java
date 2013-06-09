@@ -10,12 +10,14 @@ import de.feu.plib.xml.query.QueryType;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,19 +36,7 @@ public class PlibDaoIT {
     private static Logger LOGGER = Logger.getLogger(PlibDaoIT.class);
 
     @Autowired
-    PlibDao plib;
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void testLoadObjectsFrom() throws Exception {
-    }
+    private PlibDao plib;
 
     @Test
     public void shouldReturnTrueWithExistingIRDI() {
@@ -86,7 +76,7 @@ public class PlibDaoIT {
     @Test
     public void testThatWhenReadExternalProductIdsByIrdiMustReturnSome() throws Exception {
         Irdi irdi = createMultiListTestIrdi();
-        List<String> productIds = plib.readExternalProductIdsBy(irdi);
+        List<BigDecimal> productIds = plib.readExternalProductIdsBy(irdi);
         assertNotNull(productIds);
         assertEquals(8, productIds.size());
     }
@@ -98,9 +88,11 @@ public class PlibDaoIT {
     @Test
     public void shouldReturnOneTestExternalIdWithTestIrdi() {
         Irdi irdi = createSkalpellIrdi();
-        List<String> externalProductIds = plib.readExternalProductIdsBy(irdi);
+        List<BigDecimal> externalProductIds = plib.readExternalProductIdsBy(irdi);
         assertNotNull(externalProductIds);
         assertEquals(2, externalProductIds.size());
+        LOGGER.info("external product ids: " + externalProductIds.get(0));
+        assertEquals(new BigDecimal("300000001"), externalProductIds.get(0));
     }
 
     /**
@@ -113,26 +105,34 @@ public class PlibDaoIT {
      * </ul>
      */
     @Test
+    @Ignore("loadObjectsFrom is obsolte, maybe later reimplemented")
     public void shouldReturnOneInstanceOfSkalpellWithTwoProperties() {
         Irdi skalpellIrdi = createSkalpellIrdi();
 
-        List<String> externalProductIds = plib.readExternalProductIdsBy(skalpellIrdi);
+        List<BigDecimal> externalProductIds = plib.readExternalProductIdsBy(skalpellIrdi);
 
         EnrichedQuery query = createEnrichedQueryFrom(skalpellIrdi);
         query.setType(QueryKind.SIMPLE);
         CatalogueType catalogueType = plib.loadObjectsFrom(query);
         List<ItemType> itemTypes = catalogueType.getItem();
         assertEquals(externalProductIds.size(), itemTypes.size());
-        assertEquals(2, itemTypes.get(0).getPropertyValue().size());
+        assertEquals(1, itemTypes.get(0).getPropertyValue().size());
     }
 
     @Test
     public void testLoadPropertiesByExternalIds() {
-        List<String> externalIds = new ArrayList<String>();
-        externalIds.add("300000001");
-        List<PropertyValueType> valueTypeList = plib.loadStringPropertiesByExternalIds(externalIds);
-        LOGGER.info(valueTypeList);
-        assertEquals(2, valueTypeList.size());
+        List<BigDecimal> externalIds = new ArrayList<BigDecimal>();
+        BigDecimal bigDecimal = new BigDecimal("300000001");
+
+        externalIds.add(bigDecimal);
+        List<List<PropertyValueType>> valueTypeList = plib.loadStringPropertiesByExternalIds(externalIds);
+        LOGGER.info("valuetype list: " + valueTypeList);
+        assertEquals("should be one instance",1, valueTypeList.size());
+        assertEquals("should be two properties",2, valueTypeList.get(0).size());
+
+        assertEquals("0173-1#02-AAA762#1", valueTypeList.get(0).get(0).getPropertyRef());
+        assertEquals("0173-1#02-AAB011#1", valueTypeList.get(0).get(1).getPropertyRef());
+
     }
 
     private EnrichedQuery createEnrichedQueryFrom(Irdi skalpellIrdi) {

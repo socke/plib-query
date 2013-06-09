@@ -6,6 +6,7 @@ import de.feu.plib.business.analyser.QueryKind;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.PropertyValueType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class PlibDaoFake implements PlibDao {
     }
 
     @Override
-    public List<String> readExternalProductIdsBy(Irdi irdi) {
+    public List<BigDecimal> readExternalProductIdsBy(Irdi irdi) {
         return null;
     }
 
@@ -44,7 +45,12 @@ public class PlibDaoFake implements PlibDao {
     }
 
     @Override
-    public List<PropertyValueType> loadStringPropertiesByExternalIds(List<String> externalIds) {
+    public List<List<PropertyValueType>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds) {
+        return null;
+    }
+
+    @Override
+    public List<PropertyValueType> loadNumberPropertiesByExternalIds(List<String> externalIds) {
         return null;
     }
 }

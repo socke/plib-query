@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -34,7 +35,7 @@ public class PlibDaoImpl implements PlibDao {
 
     private static final String CHECK_IRDI_SQL = "SELECT COUNT(*) FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?";
 
-    private static final String GET_EXT_ID_SQL = "SELECT o.EXT_PROD_ID FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?";
+    private static final String GET_EXT_ID_SQL = "SELECT o.DI_ID FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?";
 
     private static final String GET_STRING_PROPERTIES = "SELECT P.IRDI, LOJ.VALUE, LOJ.UNIT, LOJ.PREFIX, LOJ.TOLERANCE, LOJ.VALUE_ID " +
             "       FROM (SELECT DI_ID, P_ID,  VALUE, UNIT, PREFIX, TOLERANCE, VALUE_ID " +
@@ -54,15 +55,15 @@ public class PlibDaoImpl implements PlibDao {
 
     @Transactional(readOnly = true)
     @Override
-    public List<String> readExternalProductIdsBy(Irdi irdi) {
-        List<String> externalIds = new ArrayList<String>();
+    public List<BigDecimal> readExternalProductIdsBy(Irdi irdi) {
+        List<BigDecimal> externalIds = new ArrayList<BigDecimal>();
         List<Map<String, Object>> extIdList = jdbcTemplate.queryForList(GET_EXT_ID_SQL, new Object[]{irdi.getIrdi()});
         LOGGER.info("Read ext_product_ids of irdi: " + irdi.getIrdi());
         for (Map<String, Object> extIdRow : extIdList) {
             for (Map.Entry<String, Object> extIdEntry : extIdRow.entrySet()) {
                 LOGGER.info("Column name: " + extIdEntry.getKey());
                 LOGGER.info("Column value: " + extIdEntry.getValue());
-                externalIds.add((String) extIdEntry.getValue());
+                externalIds.add((BigDecimal) extIdEntry.getValue());
             }
         }
         LOGGER.info(extIdList.toString());
@@ -123,26 +124,24 @@ public class PlibDaoImpl implements PlibDao {
             return catalogue;
         }
 
-
-
         return catalogue;
     }
-
 
     /**
      * Load the string properties plain from the database in the type the database returns.
      * Handle business logic in other class (facade, or business logic)
+     * TODO refactor doublelist to a model class
      * @param externalIds list of external ids
-     * @return list of property value pair
+     * @return list of items which hold a list of property value pair
      */
     @Override
-    public List<PropertyValueType> loadStringPropertiesByExternalIds(List<String> externalIds) {
+    public List<List<PropertyValueType>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds) {
         LOGGER.info("external ids: " + externalIds);
-
-        List<PropertyValueType> propertyValueTypeList = new ArrayList<PropertyValueType>();
+        List<List<PropertyValueType>> itemValueList = new ArrayList<List<PropertyValueType>>();
         List<Map<String, Object>> propertyIdList;
 
-        for (String extId : externalIds) {
+        for (BigDecimal extId : externalIds) {
+            List<PropertyValueType> propertyValueTypeList = new ArrayList<PropertyValueType>();
             propertyIdList = jdbcTemplate.queryForList(GET_STRING_PROPERTIES, new Object[]{extId});
             LOGGER.info("Property id list of external id: " + extId + " is " + propertyIdList.toString());
 
@@ -150,9 +149,10 @@ public class PlibDaoImpl implements PlibDao {
                 PropertyValueType propertyValueType = getKeyValueFromRow(extIdRow.entrySet());
                 propertyValueTypeList.add(propertyValueType);
             }
+            itemValueList.add(propertyValueTypeList);
         }
 
-        return propertyValueTypeList;
+        return itemValueList;
     }
 
     @Override
