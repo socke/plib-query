@@ -18,10 +18,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Transactional
 public class PlibDaoImpl implements PlibDao {
@@ -30,21 +27,6 @@ public class PlibDaoImpl implements PlibDao {
      * Logger instance
      */
     static final Logger LOGGER = Logger.getLogger(PlibDaoImpl.class);
-
-    private static final String SELECT = "SELECT name FROM DE_COMPANY";
-
-    private static final String CHECK_IRDI_SQL = "SELECT COUNT(*) FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?";
-
-    private static final String GET_EXT_ID_SQL = "SELECT o.DI_ID FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?";
-
-    private static final String GET_STRING_PROPERTIES = "SELECT P.IRDI, LOJ.VALUE, LOJ.UNIT, LOJ.PREFIX, LOJ.TOLERANCE, LOJ.VALUE_ID " +
-            "       FROM (SELECT DI_ID, P_ID,  VALUE, UNIT, PREFIX, TOLERANCE, VALUE_ID " +
-            "             FROM DO_STRING LEFT OUTER JOIN (SELECT DI_ID, P_ID, UNIT, PREFIX, TOLERANCE, VALUE_ID" +
-            "                                             FROM DO_ADDITIONAL_DATA " +
-            "                                             WHERE ERR_CODE = 1)" +
-            "             USING (DI_ID, P_ID) " +
-            "             WHERE (DI_ID =?) AND (DO_STRING.ERR_CODE = 1))LOJ JOIN DE_PROPERTY P" +
-            "                                                                       ON LOJ.P_ID = P.ID";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -57,7 +39,7 @@ public class PlibDaoImpl implements PlibDao {
     @Override
     public List<BigDecimal> readExternalProductIdsBy(Irdi irdi) {
         List<BigDecimal> externalIds = new ArrayList<BigDecimal>();
-        List<Map<String, Object>> extIdList = jdbcTemplate.queryForList(GET_EXT_ID_SQL, new Object[]{irdi.getIrdi()});
+        List<Map<String, Object>> extIdList = jdbcTemplate.queryForList(SQLQuery.GET_EXT_ID_SQL.getSql(), new Object[]{irdi.getIrdi()});
         LOGGER.info("Read ext_product_ids of irdi: " + irdi.getIrdi());
         for (Map<String, Object> extIdRow : extIdList) {
             for (Map.Entry<String, Object> extIdEntry : extIdRow.entrySet()) {
@@ -88,7 +70,7 @@ public class PlibDaoImpl implements PlibDao {
     @Override
     public int getNumberOfObjectsOfIrdi(Irdi irdi) {
         int numberOfObjects = 0;
-        numberOfObjects = jdbcTemplate.queryForInt(CHECK_IRDI_SQL, new Object[]{irdi.getIrdi()});
+        numberOfObjects = jdbcTemplate.queryForInt(SQLQuery.CHECK_IRDI.getSql(), new Object[]{irdi.getIrdi()});
         LOGGER.info("numberOfObjects: " + numberOfObjects);
         return numberOfObjects;
     }
@@ -103,7 +85,7 @@ public class PlibDaoImpl implements PlibDao {
     @Override
     public List<String> getCompanyNames() {
         @SuppressWarnings("rawtypes")
-        List companyNames = jdbcTemplate.query(SELECT, new RowMapper() {
+        List companyNames = jdbcTemplate.query(SQLQuery.SELECT.getSql(), new RowMapper() {
             @Override
             public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
                 LOGGER.info(rs.getString(1));
@@ -130,26 +112,22 @@ public class PlibDaoImpl implements PlibDao {
     /**
      * Load the string properties plain from the database in the type the database returns.
      * Handle business logic in other class (facade, or business logic)
-     * TODO refactor doublelist to a model class
+     * We cannot map the plain lists to value objects. This would be double work as we currently do not
+     * exactly know which type it is. We only load it from the predefined DO_STRING table, but we do not know if
+     * it really is a string!
      * @param externalIds list of external ids
      * @return list of items which hold a list of property value pair
      */
     @Override
-    public List<List<PropertyValueType>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds) {
+    public List<List<Map<String, Object>>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds) {
         LOGGER.info("external ids: " + externalIds);
-        List<List<PropertyValueType>> itemValueList = new ArrayList<List<PropertyValueType>>();
+        List<List<Map<String, Object>>> itemValueList = new ArrayList<List<Map<String, Object>>>();
         List<Map<String, Object>> propertyIdList;
 
         for (BigDecimal extId : externalIds) {
-            List<PropertyValueType> propertyValueTypeList = new ArrayList<PropertyValueType>();
-            propertyIdList = jdbcTemplate.queryForList(GET_STRING_PROPERTIES, new Object[]{extId});
+            propertyIdList = jdbcTemplate.queryForList(SQLQuery.GET_STRING_PROPERTIES.getSql(), new Object[]{extId});
             LOGGER.info("Property id list of external id: " + extId + " is " + propertyIdList.toString());
-
-            for (Map<String, Object> extIdRow : propertyIdList) {
-                PropertyValueType propertyValueType = getKeyValueFromRow(extIdRow.entrySet());
-                propertyValueTypeList.add(propertyValueType);
-            }
-            itemValueList.add(propertyValueTypeList);
+            itemValueList.add(propertyIdList);
         }
 
         return itemValueList;
@@ -160,6 +138,17 @@ public class PlibDaoImpl implements PlibDao {
         return null;
     }
 
+    @Override
+    public List<Map<String, Object>> loadTypeAndUnitOfPropertyBy(String propertyId) {
+        List<Map<String, Object>> propertyIdList = jdbcTemplate.queryForList(SQLQuery.GET_PROPERTY_DATA_TYPE.getSql(), new Object[]{propertyId});
+        return propertyIdList;
+    }
+
+    /**
+     * TODO the check is wrong here, must be done in business logic!
+     * @param entries
+     * @return
+     */
     private PropertyValueType getKeyValueFromRow(Set<Map.Entry<String, Object>> entries) {
         PropertyValueType property = new PropertyValueType();
         for (Map.Entry<String, Object> propertyEntry : entries) {

@@ -8,6 +8,7 @@ import de.feu.plib.xml.query.QueryType;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface PlibDao {
 
@@ -59,7 +60,7 @@ public interface PlibDao {
      * @param externalIds the external ids for which the string properties should be loaded
      * @return a list of propertyvaluetype
      */
-    List<List<PropertyValueType>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds);
+    List<List<Map<String, Object>>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds);
 
     /**
      * Loads the number Properties by given external ids in the string list.
@@ -70,4 +71,8 @@ public interface PlibDao {
     List<PropertyValueType> loadNumberPropertiesByExternalIds(List<String> externalIds);
 
 
+    /**
+     * Load the units and the types of a property by given id.
+     */
+    List<Map<String, Object>> loadTypeAndUnitOfPropertyBy(String propertyId);
 }

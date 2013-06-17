@@ -88,7 +88,7 @@ public class QueryService {
     }
 
     private QueryPipe getQueryPipe() {
-        QueryPipe queryPipe =  (QueryPipe) context.getBean("queryProcessor");
+        QueryPipe queryPipe =  (QueryPipe) context.getBean("queryPipe");
         return queryPipe;
     }
 

@@ -8,6 +8,7 @@ import de.feu.plib.xml.catalogue.PropertyValueType;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO: document file
@@ -45,12 +46,17 @@ public class PlibDaoFake implements PlibDao {
     }
 
     @Override
-    public List<List<PropertyValueType>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds) {
+    public List<List<Map<String, Object>>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds) {
         return null;
     }
 
     @Override
     public List<PropertyValueType> loadNumberPropertiesByExternalIds(List<String> externalIds) {
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> loadTypeAndUnitOfPropertyBy(String propertyId) {
         return null;
     }
 }

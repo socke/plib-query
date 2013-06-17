@@ -32,14 +32,6 @@ public class SimpleQueryServiceTest {
     @Autowired
     private SimpleQueryService simpleQueryService;
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
     @Test
     public void testLoadData() throws Exception {
         QueryType query = new QueryType();
