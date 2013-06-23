@@ -70,8 +70,9 @@ public class QueryService {
     public String query(String queryXML) {
         LOGGER.info("Incoming query XML content :" + queryXML);
         QueryType queryType = marshaller.unmarshallXML(queryXML, QueryType.class);
-
+        LOGGER.info("QueryType: " + queryType);
         CatalogueType catalogue = queryPipe.filter(queryType);
+        LOGGER.info("Filled Catalogue: " + catalogue);
         String marshalledCatalogue = marshaller.marshall(catalogue);
         LOGGER.info("Marshalled catalogue: " + marshalledCatalogue);
         return marshalledCatalogue;

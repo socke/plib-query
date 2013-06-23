@@ -65,6 +65,7 @@ public class SimpleQueryService {
             for (List<Map<String, Object>> propList : listOfItems) {
                 ItemType item = new ItemType();
                 item.setClassRef(enrichedQuery.getIrdi());
+                LOGGER.info("class ref: " + enrichedQuery.getIrdi());
 
                 for (Map<String, Object> map : propList) {
                     String irdi = "";

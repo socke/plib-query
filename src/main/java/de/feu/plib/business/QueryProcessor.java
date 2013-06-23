@@ -53,7 +53,7 @@ public class QueryProcessor implements QueryPipe {
             // does it have only an irdi? are properties selected?
             // do we have a known item given? then we must decide which DAO to call
             // and how to call it
-            return createCatalogue();
+            return catalogueType;
         }
         if (isParametricQuery(query)) {
             parametricQueryFilter.filter(query);
