@@ -3,10 +3,15 @@ package de.feu.plib.business;
 import de.feu.plib.xml.AbstractXMLTest;
 import de.feu.plib.xml.XMLMarshaller;
 import de.feu.plib.xml.XMLMarshallerImpl;
+import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.query.QueryType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXParseException;
 
 import static org.junit.Assert.assertEquals;
@@ -16,20 +21,21 @@ import static org.junit.Assert.assertTrue;
 /**
  * TODO: document file
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"/beans_for_tests.xml"})
 public class QueryProcessorTest extends AbstractXMLTest {
 
+    @Autowired
     private QueryProcessor queryProcessor;
 
     @Before
     public void setUp() {
         super.setUp();
-        queryProcessor = new QueryProcessor();
     }
 
     @After
     public void tearDown() {
         super.tearDown();
-        queryProcessor = null;
     }
 
     @Test
@@ -41,6 +47,15 @@ public class QueryProcessorTest extends AbstractXMLTest {
     public void shouldBeSimpleQueryWithOnlyIrdi() throws Exception {
         QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
+    }
+
+    @Test
+    public void shouldBeSimpleQueryWithTwoProperties() throws Exception {
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi.xml"), QueryType.class);
+        assertTrue(queryProcessor.isSimpleQuery(queryType));
+        CatalogueType catalogueType = queryProcessor.filter(queryType);
+        assertEquals(2, catalogueType.getItem().size());
+        assertEquals(2, catalogueType.getItem().get(0).getPropertyValue().size());
     }
 
     @Test(expected = RuntimeException.class)

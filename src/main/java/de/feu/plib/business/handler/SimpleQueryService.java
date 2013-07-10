@@ -87,7 +87,6 @@ public class SimpleQueryService {
                             value = (String)entry.getValue();
                         }
 
-                        item.getPropertyValue().add(propertyValue);
                     }
                     propertyValue.setPropertyRef(irdi);
                     propertyValue = loadFromTypeAndUnitMap(id, value, propertyValue, propertyTypesAndValues);
