@@ -51,9 +51,10 @@ public class PlibDaoFake implements PlibDao {
     }
 
     @Override
-    public List<PropertyValueType> loadNumberPropertiesByExternalIds(List<String> externalIds) {
+    public List<List<Map<String, Object>>> loadNumberPropertiesByExternalIds(List<BigDecimal> externalIds) {
         return null;
     }
+
 
     @Override
     public List<Map<String, Object>> loadTypeAndUnitOfPropertyBy(String propertyId) {

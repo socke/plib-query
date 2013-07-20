@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -238,17 +239,10 @@ public class SimpleQueryService {
     private List<List<Map<String,Object>>> loadItems() {
         List<BigDecimal> listOfExternalIds = loadExternalIds();
         // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
-        return plibDao.loadStringPropertiesByExternalIds(listOfExternalIds);
-    }
+        List<List<Map<String, Object>>> stringPropertyList = plibDao.loadStringPropertiesByExternalIds(listOfExternalIds);
+        List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
 
-    private ItemType fillItemWithProperties(List<Map<String, Object>> propList) {
-        ItemType item = new ItemType();
-        /**
-        for (PropertyValueType propertyValueType : propList) {
-            item.getPropertyValue().add(propertyValueType);
-        }
-         */
-        return item;
+        return Collections.emptyList();
     }
 
     private List<BigDecimal> loadExternalIds() {

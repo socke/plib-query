@@ -68,7 +68,7 @@ public interface PlibDao {
      * @param externalIds
      * @return a list of propertyvaluetype
      */
-    List<PropertyValueType> loadNumberPropertiesByExternalIds(List<String> externalIds);
+    List<List<Map<String, Object>>> loadNumberPropertiesByExternalIds(List<BigDecimal> externalIds);
 
 
     /**

@@ -69,13 +69,39 @@ public class QueryService {
     @Produces(MediaType.APPLICATION_XML)
     public String query(String queryXML) {
         LOGGER.info("Incoming query XML content :" + queryXML);
-        QueryType queryType = marshaller.unmarshallXML(queryXML, QueryType.class);
+        QueryType queryType = unmarshall(queryXML);
         LOGGER.info("QueryType: " + queryType);
         CatalogueType catalogue = queryPipe.filter(queryType);
+
         LOGGER.info("Filled Catalogue: " + catalogue);
-        String marshalledCatalogue = marshaller.marshall(catalogue);
+        String marshalledCatalogue = marshall(catalogue);
+
         LOGGER.info("Marshalled catalogue: " + marshalledCatalogue);
         return marshalledCatalogue;
+    }
+
+    private String marshall(CatalogueType catalogue) {
+        String marshalledCatalogue;
+        try {
+            marshalledCatalogue = marshaller.marshall(catalogue);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error occured during marshalling of xml: " + e);
+            return "";
+        }
+        return marshalledCatalogue;
+    }
+
+    private QueryType unmarshall(String queryXML) {
+        QueryType queryType;
+        try {
+            queryType = marshaller.unmarshallXML(queryXML, QueryType.class);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error occured during unmarshalling of xml: " + e);
+            // return empty QueryType in exception case
+            // TODO later think about better error handling
+            return new QueryType();
+        }
+        return queryType;
     }
 
     private XMLMarshaller getMarshaller() {

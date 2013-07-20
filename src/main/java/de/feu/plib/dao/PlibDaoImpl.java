@@ -133,9 +133,24 @@ public class PlibDaoImpl implements PlibDao {
         return itemValueList;
     }
 
+    /**
+     * TODO implement method
+     * @param externalIds list of external ids
+     * @return list of items which hold a list of property value pair
+     */
     @Override
-    public List<PropertyValueType> loadNumberPropertiesByExternalIds(List<String> externalIds) {
-        return null;
+    public List<List<Map<String, Object>>> loadNumberPropertiesByExternalIds(List<BigDecimal> externalIds) {
+        LOGGER.info("external ids: " + externalIds);
+        List<List<Map<String, Object>>> itemValueList = new ArrayList<List<Map<String, Object>>>();
+        List<Map<String, Object>> propertyIdList;
+
+        for (BigDecimal extId : externalIds) {
+            propertyIdList = jdbcTemplate.queryForList(SQLQuery.GET_NUMBER_PROPERTIES.getSql(), new Object[]{extId});
+            LOGGER.info("Property id list of external id: " + extId + " is " + propertyIdList.toString());
+            itemValueList.add(propertyIdList);
+        }
+
+        return itemValueList;
     }
 
     @Override

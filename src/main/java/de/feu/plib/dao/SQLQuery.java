@@ -23,10 +23,23 @@ public enum SQLQuery {
      * Normally for a Property in DE_PROPERTY, a corresponding data type and unit is defined by joining the tables
      * DE_DATA_TYPE and then DE_UNIT.
      * However, we will read it here, depends on the client what to do with it. </p>
+     * TODO: we must change that later to use the procedures
      */
     GET_STRING_PROPERTIES("SELECT P.ID, P.IRDI, LOJ.VALUE, LOJ.UNIT, LOJ.PREFIX, LOJ.TOLERANCE, LOJ.VALUE_ID " +
             "       FROM (SELECT DI_ID, P_ID,  VALUE, UNIT, PREFIX, TOLERANCE, VALUE_ID " +
             "             FROM DO_STRING LEFT OUTER JOIN (SELECT DI_ID, P_ID, UNIT, PREFIX, TOLERANCE, VALUE_ID" +
+            "                                             FROM DO_ADDITIONAL_DATA " +
+            "                                             WHERE ERR_CODE = 1) " +
+            "             USING (DI_ID, P_ID) " +
+            "             WHERE (DI_ID =?) AND (DO_STRING.ERR_CODE = 1))LOJ JOIN DE_PROPERTY P" +
+            "                                                                       ON LOJ.P_ID = P.ID"),
+    /**
+     * Get all number properties of an item with given DI_ID.
+     * TODO: we must change that later to use the procedures
+     */
+    GET_NUMBER_PROPERTIES("SELECT P.ID, P.IRDI, LOJ.VALUE, LOJ.UNIT, LOJ.PREFIX, LOJ.TOLERANCE, LOJ.VALUE_ID " +
+            "       FROM (SELECT DI_ID, P_ID,  VALUE, UNIT, PREFIX, TOLERANCE, VALUE_ID " +
+            "             FROM DO_NUMBER LEFT OUTER JOIN (SELECT DI_ID, P_ID, UNIT, PREFIX, TOLERANCE, VALUE_ID" +
             "                                             FROM DO_ADDITIONAL_DATA " +
             "                                             WHERE ERR_CODE = 1) " +
             "             USING (DI_ID, P_ID) " +

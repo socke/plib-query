@@ -33,7 +33,7 @@ public class TestProcedureTest {
 
         TestProcedure sp = new TestProcedure(ds);
         //String i = sp.execute(1l, 1l);
-        String i = sp.execute(1l);
+        String i = sp.execute("EXT_300000001");
         assertEquals("test", i);
 
 	}
