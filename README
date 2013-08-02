@@ -3,4 +3,6 @@ First you need the oracle jdbc driver. Unfortunately these are not available in 
 So download it or take the 10.2 version from resources directory delivered here.
 
 Then install it into your local maven repository: 
-mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.2.0 -Dpackaging=jar -Dfile=lib/ojdbc.jar
+mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.2.0 -Dpackaging=jar -Dfile=lib/ojdbc6.jar
+
+NOTE: The -Dfile path must match the exact jar file otherwise you have no response that something went wrong! Maven will simply install a pom and no jar into your .m2 directory!
