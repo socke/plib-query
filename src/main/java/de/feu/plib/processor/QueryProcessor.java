@@ -1,11 +1,11 @@
 /**
  *
  */
-package de.feu.plib.business;
+package de.feu.plib.processor;
 
-import de.feu.plib.business.analyser.EnrichedQuery;
-import de.feu.plib.business.analyser.QueryFilter;
-import de.feu.plib.business.handler.SimpleQueryService;
+import de.feu.plib.processor.analyser.EnrichedQuery;
+import de.feu.plib.processor.analyser.QueryFilter;
+import de.feu.plib.processor.handler.SimpleQueryService;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
 import de.feu.plib.xml.catalogue.PropertyValueType;

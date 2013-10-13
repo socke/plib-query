@@ -1,7 +1,7 @@
 package de.feu.plib.dao;
 
-import de.feu.plib.business.analyser.EnrichedQuery;
-import de.feu.plib.business.analyser.Irdi;
+import de.feu.plib.processor.analyser.EnrichedQuery;
+import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.PropertyValueType;
 import de.feu.plib.xml.value.StringValueType;
@@ -39,7 +39,7 @@ public class PlibDaoImpl implements PlibDao {
     @Override
     public List<BigDecimal> readExternalProductIdsBy(Irdi irdi) {
         List<BigDecimal> externalIds = new ArrayList<BigDecimal>();
-        List<Map<String, Object>> extIdList = jdbcTemplate.queryForList(SQLQuery.GET_EXT_ID_SQL.getSql(), new Object[]{irdi.getIrdi()});
+        List<Map<String, Object>> extIdList = getExternalIds(irdi);
         LOGGER.info("Read ext_product_ids of irdi: " + irdi.getIrdi());
         for (Map<String, Object> extIdRow : extIdList) {
             for (Map.Entry<String, Object> extIdEntry : extIdRow.entrySet()) {
@@ -50,6 +50,10 @@ public class PlibDaoImpl implements PlibDao {
         }
         LOGGER.info(extIdList.toString());
         return externalIds;
+    }
+
+    protected List<Map<String, Object>> getExternalIds(Irdi irdi) {
+        return jdbcTemplate.queryForList(SQLQuery.GET_EXT_ID_SQL.getSql(), new Object[]{irdi.getIrdi()});
     }
 
     @Transactional(readOnly = true)

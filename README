@@ -1,8 +1,35 @@
-First you need the oracle jdbc driver. Unfortunately these are not available in public maven repositories. 
+Howto run plib-query project on Tomcat
+----------------------------------------
 
-So download it or take the 10.2 version from resources directory delivered here.
+=== Prerequesites ===
 
-Then install it into your local maven repository: 
+1. Install a Tomcat Server
+See http://tomcat.apache.org/
+
+2. Install maven 2 or maven 3 if not available:
+See http://maven.apache.org/
+
+=== Set up ==
+
+1. Clone the sources from bitbucket:
+git clone https://ssobek@bitbucket.org/ssobek/plib-query.git plib-query
+
+2. Then you need the oracle jdbc driver. Unfortunately these are not available in public maven repositories.
+
+So download it form the internet by googling or take the 10.2 version from resources directory delivered here. (see /lib/ojdbc6.jar)
+
+Then install it into your local maven repository:
 mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.2.0 -Dpackaging=jar -Dfile=lib/ojdbc6.jar
 
 NOTE: The -Dfile path must match the exact jar file otherwise you have no response that something went wrong! Maven will simply install a pom and no jar into your .m2 directory!
+
+3. Now try to build the project:
+mvn clean install
+
+If you may have a failure due to test failures, it can be that there are some integration test failures if you do not have a oracle database running.
+Ignore that for now:
+
+mvn clean install -Dmaven.test.skip=true
+
+
+

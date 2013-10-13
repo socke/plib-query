@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.feu.plib</groupId>
     <artifactId>plib-characteristic-data</artifactId>
@@ -164,24 +165,24 @@
                 we need that as we generate the classes for the XSD files. 
             -->
             <plugin>
-			    <groupId>org.codehaus.mojo</groupId>
-			    <artifactId>build-helper-maven-plugin</artifactId>
-			    <executions>
-			        <execution>
-			            <id>add-source</id>
-			            <phase>generate-sources</phase>
-			            <goals>
-			                <goal>add-source</goal>
-			            </goals>
-			            <configuration>
-			                <sources>
-			                    <source>src/main/generated</source>
-			                </sources>
-			            </configuration>
-			        </execution>
-			    </executions>
-			</plugin>
-			
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/main/generated</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
@@ -190,11 +191,11 @@
                     <schemaDirectory>src/main/resources/schema</schemaDirectory>
                     <generateDirectory>src/main/generated</generateDirectory>
                     <removeOldOutput>true</removeOldOutput>
-<!-- we do not use bindingDirectory as if we put the binding.xjb in the schema directory it will be taken -->
-<!--                     <bindingDirectory>src/main/resources/binding</bindingDirectory> -->
+                    <!-- we do not use bindingDirectory as if we put the binding.xjb in the schema directory it will be taken -->
+                    <!--                     <bindingDirectory>src/main/resources/binding</bindingDirectory> -->
 
-<!--  Setting the generated package in pom will override what you set in binding.xjb file, thus commented out -->
-<!--                     <generatePackage>de.feu.plib.jaxb</generatePackage> -->
+                    <!--  Setting the generated package in pom will override what you set in binding.xjb file, thus commented out -->
+                    <!--                     <generatePackage>de.feu.plib.jaxb</generatePackage> -->
                     <strict>false</strict>
                     <extension>true</extension>
                     <plugins>

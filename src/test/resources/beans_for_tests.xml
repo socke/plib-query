@@ -26,7 +26,7 @@
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
-        <property name="url" value="jdbc:oracle:thin:@//172.16.13.130:1521/XE" />
+        <property name="url" value="jdbc:oracle:thin:@//172.16.207.129:1521/XE" />
         <property name="username" value="admin" />
         <property name="password" value="plib" />
     </bean>
@@ -42,14 +42,14 @@
     <bean id="xml.marshaller" class="de.feu.plib.xml.XMLMarshallerImpl">
     </bean>
 
-    <bean id="queryPipe" class="de.feu.plib.business.QueryProcessor">
+    <bean id="queryPipe" class="de.feu.plib.processor.QueryProcessor">
         <property name="simpleQueryFilter" ref="simpleQueryAnalyser" />
         <property name="parametricQueryFilter" ref="parametricQueryAnalyser" />
     </bean>
 
-    <bean id="simpleQueryAnalyser" class="de.feu.plib.business.analyser.SimpleQueryFilter" />
+    <bean id="simpleQueryAnalyser" class="de.feu.plib.processor.analyser.SimpleQueryFilter" />
 
-    <bean id="parametricQueryAnalyser" class="de.feu.plib.business.analyser.ParametricQueryFilter" />
+    <bean id="parametricQueryAnalyser" class="de.feu.plib.processor.analyser.ParametricQueryFilter" />
 
-    <bean id="simpleQueryService" class="de.feu.plib.business.handler.SimpleQueryService" />
+    <bean id="simpleQueryService" class="de.feu.plib.processor.handler.SimpleQueryService" />
 </beans>

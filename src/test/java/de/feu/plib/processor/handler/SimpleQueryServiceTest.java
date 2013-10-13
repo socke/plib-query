@@ -1,12 +1,10 @@
-package de.feu.plib.business.handler;
+package de.feu.plib.processor.handler;
 
-import de.feu.plib.business.analyser.EnrichedQuery;
+import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
 import de.feu.plib.xml.query.QueryType;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

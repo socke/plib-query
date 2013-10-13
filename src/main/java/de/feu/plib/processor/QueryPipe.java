@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.feu.plib.business;
+package de.feu.plib.processor;
 
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.query.QueryType;

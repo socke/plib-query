@@ -1,8 +1,6 @@
-package de.feu.plib.business;
+package de.feu.plib.processor;
 
 import de.feu.plib.xml.AbstractXMLTest;
-import de.feu.plib.xml.XMLMarshaller;
-import de.feu.plib.xml.XMLMarshallerImpl;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.query.QueryType;
 import org.junit.After;
@@ -12,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.xml.sax.SAXParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

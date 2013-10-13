@@ -1,4 +1,4 @@
-package de.feu.plib.business.analyser;
+package de.feu.plib.processor.analyser;
 
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.query.QueryType;

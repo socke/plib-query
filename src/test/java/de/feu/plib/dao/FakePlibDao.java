@@ -1,10 +1,9 @@
 package de.feu.plib.dao;
 
-import de.feu.plib.business.analyser.EnrichedQuery;
-import de.feu.plib.business.analyser.Irdi;
-import de.feu.plib.business.analyser.QueryKind;
+import de.feu.plib.processor.analyser.EnrichedQuery;
+import de.feu.plib.processor.analyser.Irdi;
+import de.feu.plib.processor.analyser.QueryKind;
 import de.feu.plib.xml.catalogue.CatalogueType;
-import de.feu.plib.xml.catalogue.PropertyValueType;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.Map;
 /**
  * TODO: document file
  */
-public class PlibDaoFake implements PlibDao {
+public class FakePlibDao implements PlibDao {
     @Override
     public boolean doObjectsExistsWithThis(Irdi irdi) {
         return false;

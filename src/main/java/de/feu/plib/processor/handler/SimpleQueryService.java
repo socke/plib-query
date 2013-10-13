@@ -1,6 +1,6 @@
-package de.feu.plib.business.handler;
+package de.feu.plib.processor.handler;
 
-import de.feu.plib.business.analyser.EnrichedQuery;
+import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.dao.PlibDao;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
@@ -13,14 +13,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
  * TODO: document file
  */
-public class SimpleQueryService {
+public class SimpleQueryService extends AbstractQueryService {
 
     /**
      * Logger instance
@@ -154,26 +153,11 @@ public class SimpleQueryService {
                              * The reason is that it is called real_measure_type.
                              * But we do not know if there are other value types, e.g. Complex...
                              */
-                            MeasureRangeValueType mrt = new MeasureRangeValueType();
-                            NumericValueType lowerValue = new NumericValueType();
-                            NumericValueType upperValue = new NumericValueType();
-                            RealValueType rvtBound1 = new RealValueType();
-                            rvtBound1.setValue(Double.valueOf(bound1));
-                            lowerValue.setRealValue(rvtBound1);
-                            RealValueType rvtBound2 = new RealValueType();
-                            rvtBound2.setValue(Double.valueOf(bound1));
-                            upperValue.setRealValue(rvtBound2);
-                            mrt.setLowerValue(lowerValue);
-                            mrt.setUpperValue(upperValue);
-                            propertyValue.setMeasureRangeValue(mrt);
+                            setPropertyValueByBounds(propertyValue, bound1, bound2);
                         }
 
                         if (!boundsAreSet(bound1, bound2) ) {
-                            MeasureSingleNumberValueType msv = new MeasureSingleNumberValueType();
-                            RealValueType realValue = new RealValueType();
-                            realValue.setValue(Double.valueOf(value));
-                            msv.setRealValue(realValue);
-                            propertyValue.setMeasureSingleNumberValue(msv);
+                            setPropertyValue(value, propertyValue);
                         }
 
                         /*
@@ -198,6 +182,29 @@ public class SimpleQueryService {
             }
         }
         return propertyValue;
+    }
+
+    private void setPropertyValue(String value, PropertyValueType propertyValue) {
+        MeasureSingleNumberValueType msv = new MeasureSingleNumberValueType();
+        RealValueType realValue = new RealValueType();
+        realValue.setValue(Double.valueOf(value));
+        msv.setRealValue(realValue);
+        propertyValue.setMeasureSingleNumberValue(msv);
+    }
+
+    private void setPropertyValueByBounds(PropertyValueType propertyValue, String bound1, String bound2) {
+        MeasureRangeValueType mrt = new MeasureRangeValueType();
+        NumericValueType lowerValue = new NumericValueType();
+        NumericValueType upperValue = new NumericValueType();
+        RealValueType rvtBound1 = new RealValueType();
+        rvtBound1.setValue(Double.valueOf(bound1));
+        lowerValue.setRealValue(rvtBound1);
+        RealValueType rvtBound2 = new RealValueType();
+        rvtBound2.setValue(Double.valueOf(bound2));
+        upperValue.setRealValue(rvtBound2);
+        mrt.setLowerValue(lowerValue);
+        mrt.setUpperValue(upperValue);
+        propertyValue.setMeasureRangeValue(mrt);
     }
 
     private boolean boundsAreSet(String bound1, String bound2) {
@@ -240,9 +247,9 @@ public class SimpleQueryService {
         List<BigDecimal> listOfExternalIds = loadExternalIds();
         // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
         List<List<Map<String, Object>>> stringPropertyList = plibDao.loadStringPropertiesByExternalIds(listOfExternalIds);
-        List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
+        //List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
 
-        return Collections.emptyList();
+        return stringPropertyList;
     }
 
     private List<BigDecimal> loadExternalIds() {

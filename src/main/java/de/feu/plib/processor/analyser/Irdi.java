@@ -1,4 +1,4 @@
-package de.feu.plib.business.analyser;
+package de.feu.plib.processor.analyser;
 
 /**
  * Defines the receivability of an IRDI representation.

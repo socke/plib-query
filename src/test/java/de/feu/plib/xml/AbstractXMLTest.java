@@ -1,7 +1,5 @@
 package de.feu.plib.xml;
 
-import com.sun.xml.internal.rngom.binary.AfterPattern;
-import de.feu.plib.business.QueryProcessor;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;

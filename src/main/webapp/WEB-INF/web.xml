@@ -31,9 +31,9 @@ id="WebApp_ID" version="2.5">
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <!-- jersey REST-WS -->
+        <!-- configure jersey REST-Web Service Servlet -->
     <servlet>
-        <servlet-name>jersey-serlvet</servlet-name>
+        <servlet-name>jersey-servlet</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
@@ -47,7 +47,7 @@ id="WebApp_ID" version="2.5">
         <url-pattern>/faces/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>jersey-serlvet</servlet-name>
+        <servlet-name>jersey-servlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
