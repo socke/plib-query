@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/beans.xml"})
-public class TestProcedureTest {
+public class TestProcedureIT {
 
     @Autowired javax.sql.DataSource ds;
 

@@ -16,11 +16,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * TODO: document file
+ * Integration test-class which tests the QueryProcessor.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/beans_for_tests.xml"})
-public class QueryProcessorTest extends AbstractXMLTest {
+public class QueryProcessorIT extends AbstractXMLTest {
 
     @Autowired
     private QueryProcessor queryProcessor;

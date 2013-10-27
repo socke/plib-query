@@ -20,12 +20,12 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/beans_for_tests.xml"})
-public class SimpleQueryServiceTest {
+public class SimpleQueryServiceIT {
 
     /**
      * Logger instance
      */
-    private static Logger LOGGER = Logger.getLogger(SimpleQueryServiceTest.class);
+    private static Logger LOGGER = Logger.getLogger(SimpleQueryServiceIT.class);
 
     @Autowired
     private SimpleQueryService simpleQueryService;
