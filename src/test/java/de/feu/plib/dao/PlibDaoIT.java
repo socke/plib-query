@@ -82,7 +82,6 @@ public class PlibDaoIT {
 
     /**
      * Currently there are two instances in the database, seems that these are duplicates but not sure.
-     * TODO: check why there are two instances in DB and correct testcase then. This is a dictionary issue.
      */
     @Test
     public void shouldReturnOneTestExternalIdWithTestIrdi() {

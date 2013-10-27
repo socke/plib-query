@@ -13,8 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.xml.bind.JAXBException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -29,6 +27,9 @@ public class XMLMarshallerTest extends AbstractXMLTest {
     /** Logger instance */
     private static final Logger LOGGER = Logger.getLogger(XMLMarshallerTest.class);
 
+    /**
+     * Simple marshalling test with arbitrary catalogue item.
+     */
     @Test
     public void testMarshallingWithValidArbitraryCatalogue() {
         String catalogue = marshaller.marshall(createCatalogueWithOneItem());
@@ -37,6 +38,9 @@ public class XMLMarshallerTest extends AbstractXMLTest {
         assertTrue(catalogue.contains("true"));
     }
 
+    /**
+     * Simple test with unmarshalling an arbitrary item from xml.
+     */
     @Test
     public void testUnMarshallingWithValidArbitraryClassIrdi() {
         QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi.xml"),
@@ -45,8 +49,9 @@ public class XMLMarshallerTest extends AbstractXMLTest {
     }
 
     /**
-     * TODO create specific runtime exceptions
-     * @throws Exception
+     * Throws an exception while parsing on illegal irdi passed.
+     *
+     * @throws Exception on illegal irdi
      */
     @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionDuringXMLValidationWithIllegalIrdi() throws Exception {

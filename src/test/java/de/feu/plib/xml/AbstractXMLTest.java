@@ -33,7 +33,7 @@ public class AbstractXMLTest {
     }
 
     /**
-     * Reads the xml file from given filenlame
+     * Reads the xml file from given filename
      *
      * @param filename the filename of the xml
      * @return the string content of the xml file

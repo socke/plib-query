@@ -33,7 +33,6 @@ public class PlibDaoImplTest {
     @Test
     public void testReadExternalProductIdsBy() throws Exception {
         Irdi irdi = getIrdi();
-        List<BigDecimal> productIds = plib.readExternalProductIdsBy(irdi);
     }
 
     private Irdi getIrdi() {
