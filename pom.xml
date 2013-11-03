@@ -250,10 +250,10 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <exclude>**/*Test.java</exclude>
+                                <include>**/*IT.java</include>
                             </includes>
                             <excludes>
-                                <include>**/*IT.java</include>
+                                <exclude>**/*Test.java</exclude>
                             </excludes>
                         </configuration>
                     </execution>

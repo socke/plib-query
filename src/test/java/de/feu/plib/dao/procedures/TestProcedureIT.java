@@ -35,15 +35,7 @@ public class TestProcedureIT {
         TestProcedure sp = new TestProcedure(ds);
         //String i = sp.execute(1l, 1l);
         String i = sp.execute("EXT_300000001");
-        assertEquals("test", i);
-
-	}
-    @Test
-	public void testProcedureTwoParametersCall() {
-
-        TestProcedure sp = new TestProcedure(ds);
-        Map i = sp.execute(1l, 1l);
-        assertEquals("test", i);
+        assertEquals("construct your data structure above and return here", i);
 
 	}
 
