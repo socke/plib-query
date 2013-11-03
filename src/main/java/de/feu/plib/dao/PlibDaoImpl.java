@@ -152,6 +152,7 @@ public class PlibDaoImpl implements PlibDao {
      */
     public List<PropStringObjT> loadStringPropertiesBy(List<BigDecimal> externalIds) {
         GetObjString getObjString = new GetObjString(ds);
+
         return Collections.emptyList();
     }
 
