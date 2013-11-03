@@ -4,10 +4,17 @@ package de.feu.plib.dao.procedures.types;
  * The model of the string results from the procedure.
  * Type definition in oracle:
  *
- * TYPE PROP_STRING_T IS RECORD (PROP_IRDI VARCHAR2(4000), VAL VARCHAR2(4000),
- * UNIT VARCHAR2(30), PREFIX VARCHAR2(30),
- * TOLERANCE NUMBER, value_id  NUMBER);
- * TYPE PROP_STRING_NTT IS TABLE OF PROP_STRING_T;
+ * CREATE OR REPLACE
+ * TYPE        "PROP_STRING_OBJ_T" AS OBJECT(
+ * P_IRDI    VARCHAR2(4000),
+ * "VALUE"   VARCHAR2(4000),
+ * unit      VARCHAR2(30),
+ * prefix    VARCHAR2(30),
+ * tolerance NUMBER,
+ * VALUE_ID  NUMBER
+ * );
+ *
+ * Note: the naming is not very well chosen, but we stick to the naming of the oracle types to make it recognizable.
  */
 public class PropStringObjT {
 

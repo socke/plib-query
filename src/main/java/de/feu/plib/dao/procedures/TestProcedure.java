@@ -7,16 +7,17 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import de.feu.plib.dao.procedures.types.PropStringNtt;
 import oracle.jdbc.OracleTypes;
 import oracle.sql.ARRAY;
 import org.apache.log4j.Logger;
-import org.springframework.data.jdbc.support.oracle.SqlReturnSqlData;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.SqlReturnType;
 import org.springframework.jdbc.object.StoredProcedure;
 
+/**
+ * This is a test procedure, which was for evaluating purposes only!!!
+ */
 public class TestProcedure extends StoredProcedure {
 
     private static final String SQL = "PACK_PROPERTY.GET_OBJ_STRING";

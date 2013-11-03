@@ -14,6 +14,8 @@ import java.util.Map;
  * This class calls the HILF_GET_PROP_VALS procedure.
  * However, during tests I found out that we have no real out-parameter.
  * Thus either must be changed or Queries from the procedures must be used as simple sql.
+ *
+ * Note: This is a test procedure, purpose was only for evaluating and testing.
  */
 public class PropertyValuesStoredProcedure extends StoredProcedure {
     private static final String PROCEDURE_NAME = "PACK_PROPERTY.HILF_GET_OBJ_STRING";

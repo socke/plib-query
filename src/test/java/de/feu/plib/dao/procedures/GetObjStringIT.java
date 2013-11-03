@@ -1,7 +1,7 @@
 package de.feu.plib.dao.procedures;
 
 
-
+import de.feu.plib.dao.procedures.types.PropStringObjT;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,13 +11,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
-import java.util.Map;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 
 /**
- * TODO document class GetObjStringIT
+ * Tests the GetObjString Procedure class.
+ * Assures that the values from an item can be read from the oracle database.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/beans.xml"})
@@ -36,11 +37,14 @@ public class GetObjStringIT {
     }
 
     @Test
-    public void testProcedureCall() {
+    public void shouldReturnTwoEntriesWithCorrectIrdis() {
 
         GetObjString getObjString = new GetObjString(ds);
-        String i = getObjString.execute("EXT_300000001");
-        assertEquals("construct your data structure above and return here", i);
+        List<PropStringObjT> resultList = getObjString.execute("EXT_300000001");
+
+        assertEquals(2, resultList.size());
+        assertEquals("0173-1#02-AAA762#1", resultList.get(0).getIrdi());
+        assertEquals("0173-1#02-AAB011#1", resultList.get(1).getIrdi());
 
     }
 
