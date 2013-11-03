@@ -1,5 +1,7 @@
 package de.feu.plib.dao;
 
+import de.feu.plib.dao.procedures.GetObjString;
+import de.feu.plib.dao.procedures.types.PropStringObjT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.xml.catalogue.CatalogueType;
@@ -30,6 +32,9 @@ public class PlibDaoImpl implements PlibDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    javax.sql.DataSource ds;
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -121,8 +126,11 @@ public class PlibDaoImpl implements PlibDao {
      * it really is a string!
      * @param externalIds list of external ids
      * @return list of items which hold a list of property value pair
+     * @deprecated use {@link #loadStringPropertiesBy(java.util.List)} instead. It is deprecated as we have use a plain
+     * SQL string for receiving the data from database. New Method loads it via Procedure (recommended)
      */
     @Override
+    @Deprecated
     public List<List<Map<String, Object>>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds) {
         LOGGER.info("external ids: " + externalIds);
         List<List<Map<String, Object>>> itemValueList = new ArrayList<List<Map<String, Object>>>();
@@ -135,6 +143,16 @@ public class PlibDaoImpl implements PlibDao {
         }
 
         return itemValueList;
+    }
+
+    /**
+     *
+     * @param externalIds list of external ids
+     * @return List of PropStringObjT elements holding the
+     */
+    public List<PropStringObjT> loadStringPropertiesBy(List<BigDecimal> externalIds) {
+        GetObjString getObjString = new GetObjString(ds);
+        return Collections.emptyList();
     }
 
     /**
