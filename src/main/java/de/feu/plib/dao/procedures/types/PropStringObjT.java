@@ -1,10 +1,5 @@
 package de.feu.plib.dao.procedures.types;
 
-import java.sql.SQLData;
-import java.sql.SQLException;
-import java.sql.SQLInput;
-import java.sql.SQLOutput;
-
 /**
  * The model of the string results from the procedure.
  * Type definition in oracle:
@@ -14,7 +9,7 @@ import java.sql.SQLOutput;
  * TOLERANCE NUMBER, value_id  NUMBER);
  * TYPE PROP_STRING_NTT IS TABLE OF PROP_STRING_T;
  */
-public class PropStringNtt implements SQLData {
+public class PropStringObjT {
 
     /** PROP_IRDI VARCHAR2(4000) */
     private String irdi;
@@ -28,7 +23,7 @@ public class PropStringNtt implements SQLData {
     /** PREFIX VARCHAR2(30) */
     private String prefix;
 
-    /** OLERANCE NUMBER */
+    /** TOLERANCE NUMBER */
     private Long tolerance;
 
     /** value_id  NUMBER */
@@ -87,7 +82,7 @@ public class PropStringNtt implements SQLData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PropStringNtt that = (PropStringNtt) o;
+        PropStringObjT that = (PropStringObjT) o;
 
         if (irdi != null ? !irdi.equals(that.irdi) : that.irdi != null) return false;
         if (prefix != null ? !prefix.equals(that.prefix) : that.prefix != null) return false;
@@ -112,7 +107,7 @@ public class PropStringNtt implements SQLData {
 
     @Override
     public String toString() {
-        return "PropStringNtt{" +
+        return "PropStringObjT{" +
                 "irdi='" + irdi + '\'' +
                 ", value='" + value + '\'' +
                 ", unit='" + unit + '\'' +
@@ -120,21 +115,5 @@ public class PropStringNtt implements SQLData {
                 ", tolerance=" + tolerance +
                 ", valueId=" + valueId +
                 '}';
-    }
-
-    @Override
-    public String getSQLTypeName() throws SQLException {
-        return "";  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void readSQL(SQLInput sqlInput, String s) throws SQLException {
-        irdi = sqlInput.readString();
-        value = sqlInput.readString();
-    }
-
-    @Override
-    public void writeSQL(SQLOutput sqlOutput) throws SQLException {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
