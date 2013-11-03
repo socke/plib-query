@@ -1,5 +1,10 @@
 package de.feu.plib.dao.procedures.types;
 
+import java.sql.SQLData;
+import java.sql.SQLException;
+import java.sql.SQLInput;
+import java.sql.SQLOutput;
+
 /**
  * The model of the string results from the procedure.
  * Type definition in oracle:
@@ -9,7 +14,7 @@ package de.feu.plib.dao.procedures.types;
  * TOLERANCE NUMBER, value_id  NUMBER);
  * TYPE PROP_STRING_NTT IS TABLE OF PROP_STRING_T;
  */
-public class PropStringNtt {
+public class PropStringNtt implements SQLData {
 
     /** PROP_IRDI VARCHAR2(4000) */
     private String irdi;
@@ -115,5 +120,21 @@ public class PropStringNtt {
                 ", tolerance=" + tolerance +
                 ", valueId=" + valueId +
                 '}';
+    }
+
+    @Override
+    public String getSQLTypeName() throws SQLException {
+        return "";  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void readSQL(SQLInput sqlInput, String s) throws SQLException {
+        irdi = sqlInput.readString();
+        value = sqlInput.readString();
+    }
+
+    @Override
+    public void writeSQL(SQLOutput sqlOutput) throws SQLException {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

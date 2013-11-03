@@ -16,7 +16,7 @@ import java.util.Map;
  * Thus either must be changed or Queries from the procedures must be used as simple sql.
  */
 public class PropertyValuesStoredProcedure extends StoredProcedure {
-    private static final String PROCEDURE_NAME = "PACK_PROPERTY.HILF_GET_PROP_VALS_STRING";
+    private static final String PROCEDURE_NAME = "PACK_PROPERTY.HILF_GET_OBJ_STRING";
 
     /**
      * Logger instance
@@ -25,7 +25,6 @@ public class PropertyValuesStoredProcedure extends StoredProcedure {
 
     public PropertyValuesStoredProcedure(DataSource ds) {
         super(ds, PROCEDURE_NAME);
-        //declareParameter(new SqlOutParameter("OBJ_ID", Types.VARCHAR));
         declareParameter(new SqlParameter("OBJ_ID", Types.VARCHAR));
         compile();
     }
