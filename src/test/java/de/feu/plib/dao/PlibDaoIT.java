@@ -1,5 +1,6 @@
 package de.feu.plib.dao;
 
+import de.feu.plib.dao.procedures.types.PropStringObjT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.processor.analyser.QueryKind;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Integration Test of PLIB Dao
@@ -75,7 +77,7 @@ public class PlibDaoIT {
     @Test
     public void testThatWhenReadExternalProductIdsByIrdiMustReturnSome() throws Exception {
         Irdi irdi = createMultiListTestIrdi();
-        List<BigDecimal> productIds = plib.readExternalProductIdsBy(irdi);
+        List<String> productIds = plib.readExternalProductIdsBy(irdi);
         assertNotNull(productIds);
         assertEquals(8, productIds.size());
     }
@@ -86,11 +88,11 @@ public class PlibDaoIT {
     @Test
     public void shouldReturnOneTestExternalIdWithTestIrdi() {
         Irdi irdi = createSkalpellIrdi();
-        List<BigDecimal> externalProductIds = plib.readExternalProductIdsBy(irdi);
+        List<String> externalProductIds = plib.readExternalProductIdsBy(irdi);
         assertNotNull(externalProductIds);
         assertEquals(2, externalProductIds.size());
         LOGGER.info("external product ids: " + externalProductIds.get(0));
-        assertEquals(new BigDecimal("300000001"), externalProductIds.get(0));
+        assertEquals("EXT_300000001", externalProductIds.get(0));
     }
 
     /**
@@ -107,7 +109,7 @@ public class PlibDaoIT {
     public void shouldReturnOneInstanceOfSkalpellWithTwoProperties() {
         Irdi skalpellIrdi = createSkalpellIrdi();
 
-        List<BigDecimal> externalProductIds = plib.readExternalProductIdsBy(skalpellIrdi);
+        List<String> externalProductIds = plib.readExternalProductIdsBy(skalpellIrdi);
 
         EnrichedQuery query = createEnrichedQueryFrom(skalpellIrdi);
         query.setType(QueryKind.SIMPLE);
@@ -123,16 +125,53 @@ public class PlibDaoIT {
      */
     @Test
     public void testLoadPropertiesByExternalIds() {
-        List<BigDecimal> externalIds = new ArrayList<BigDecimal>();
-        BigDecimal bigDecimal = new BigDecimal("300000001");
-
-        externalIds.add(bigDecimal);
+        List<BigDecimal> externalIds = createDIIDList();
         List<List<Map<String, Object>>> valueTypeList = plib.loadStringPropertiesByExternalIds(externalIds);
         LOGGER.info("valuetype list: " + valueTypeList);
         assertEquals("should be one instance", 1, valueTypeList.size());
         assertEquals("should be two properties",2, valueTypeList.get(0).size());
         assertThatIrdiAndValueAreAvailable(valueTypeList.get(0).get(0).entrySet(), "0173-1#02-AAA762#1");
         assertThatIrdiAndValueAreAvailable(valueTypeList.get(0).get(1).entrySet(), "0173-1#02-AAB011#1");
+    }
+
+
+    @Test
+    public void testLoadStringPropertiesBy() {
+        List<List<PropStringObjT>> propStringObjList = plib.loadStringPropertiesBy(createExternalIdsList());
+        LOGGER.info("propStringObjList list: " + propStringObjList);
+        assertEquals("should be one instance", 1, propStringObjList.size());
+        assertEquals("should be two properties",2, propStringObjList.get(0).size());
+
+    }
+
+    /**
+     * Load data type and unit for skalpell length property which should be mm and mm as well.
+     * Property id: 300903090000033914 and 300903090000034450
+     */
+    @Test
+    public void testLoadDataTypeAndUnitForAPropertyById() {
+        List<Map<String, Object>> propertyTypeAndUnit = plib.loadTypeAndUnitOfPropertyBy("300903090000033914");
+        LOGGER.info("property size: " + propertyTypeAndUnit.size());
+        assertTrue(propertyTypeAndUnit.size() == 1);
+
+        assertThatUnitAndSubTypeAreAvailable(propertyTypeAndUnit);
+
+    }
+
+    private List<String> createExternalIdsList() {
+        List<String> externalIds = new ArrayList<String>();
+        String exampleId = new String("EXT_300000001");
+
+        externalIds.add(exampleId);
+        return externalIds;
+    }
+
+    private List<BigDecimal> createDIIDList() {
+        List<BigDecimal> externalIds = new ArrayList<BigDecimal>();
+        BigDecimal bigDecimal = new BigDecimal("300000001");
+
+        externalIds.add(bigDecimal);
+        return externalIds;
     }
 
     private void assertThatIrdiAndValueAreAvailable(Set<Map.Entry<String, Object>> entrySet, String knownIRDI) {
@@ -155,19 +194,6 @@ public class PlibDaoIT {
         assertTrue(irdiFound && valueFound);
     }
 
-    /**
-     * Load data type and unit for skalpell length property which should be mm and mm as well.
-     * Property id: 300903090000033914 and 300903090000034450
-     */
-    @Test
-    public void testLoadDataTypeAndUnitForAPropertyById() {
-        List<Map<String, Object>> propertyTypeAndUnit = plib.loadTypeAndUnitOfPropertyBy("300903090000033914");
-        LOGGER.info("property size: " + propertyTypeAndUnit.size());
-        assertTrue(propertyTypeAndUnit.size() == 1);
-
-        assertThatUnitAndSubTypeAreAvailable(propertyTypeAndUnit);
-
-    }
 
     private void assertThatUnitAndSubTypeAreAvailable(List<Map<String, Object>> propertyTypeAndUnit) {
         Set<Map.Entry<String,Object>> entries = propertyTypeAndUnit.get(0).entrySet();

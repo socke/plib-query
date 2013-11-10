@@ -13,7 +13,10 @@ public enum SQLQuery {
     CHECK_IRDI("SELECT COUNT(*) FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?"),
 
     /** Get all dictionary instance ids of a given class IRDI */
-    GET_EXT_ID_SQL("SELECT o.DI_ID FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?"),
+    GET_DI_ID_SQL("SELECT o.DI_ID FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?"),
+
+    /** Get all External ids of a given class IRDI */
+    GET_EXT_ID_SQL("SELECT o.EXT_PROD_ID FROM DE_CLASS c, DO_OBJECT o WHERE c.ID = o.C_ID AND c.IRDI = ?"),
 
     /**
      * <p>Get all string properties of a item with given DI_ID (dictionary instance).   </p>

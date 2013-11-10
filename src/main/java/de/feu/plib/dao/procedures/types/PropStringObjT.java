@@ -18,6 +18,9 @@ package de.feu.plib.dao.procedures.types;
  */
 public class PropStringObjT {
 
+    /** the id of the property */
+    private Long id;
+
     /** PROP_IRDI VARCHAR2(4000) */
     private String irdi;
 
@@ -35,6 +38,14 @@ public class PropStringObjT {
 
     /** value_id  NUMBER */
     private Long valueId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getIrdi() {
         return irdi;

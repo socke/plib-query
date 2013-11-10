@@ -1,5 +1,6 @@
 package de.feu.plib.processor.handler;
 
+import de.feu.plib.dao.procedures.types.PropStringObjT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.dao.PlibDao;
 import de.feu.plib.xml.catalogue.CatalogueType;
@@ -59,7 +60,7 @@ public class SimpleQueryService extends AbstractQueryService {
 
         if (objectsExistInDatabase()) {
             LOGGER.trace("Objects exist in database");
-            List<List<Map<String, Object>>> listOfItems = loadItems();
+            List<List<PropStringObjT>> listOfItems = loadItems();
             LOGGER.trace("Items loaded from db");
 
             List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
@@ -81,32 +82,20 @@ public class SimpleQueryService extends AbstractQueryService {
      * @param listOfItems
      * @param propertyTypesAndValues
      */
-    private void mapItemDataToCatalogue(List<List<Map<String, Object>>> listOfItems, List<Map<String, Object>> propertyTypesAndValues) {
-        for (List<Map<String, Object>> propList : listOfItems) {
+    private void mapItemDataToCatalogue(List<List<PropStringObjT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues) {
+        for (List<PropStringObjT> propList : listOfItems) {
             ItemType item = new ItemType();
             item.setClassRef(enrichedQuery.getIrdi());
-            LOGGER.info("class ref: " + enrichedQuery.getIrdi());
+            LOGGER.info("set class ref: " + enrichedQuery.getIrdi());
 
-            for (Map<String, Object> map : propList) {
-                String irdi = "";
-                String value = "";
-                BigDecimal id = BigDecimal.ZERO;
+            for (PropStringObjT propStringObj : propList) {
+                String irdi = propStringObj.getIrdi();
+                String value = propStringObj.getValue();
+                BigDecimal id = BigDecimal.valueOf(propStringObj.getId());
+                LOGGER.info("irdi: " + irdi + " value: " + value + " id: " + id);
+
                 PropertyValueType propertyValue = new PropertyValueType();
 
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    LOGGER.info("key: " + entry.getKey());
-                    LOGGER.info("value: " + entry.getValue());
-
-                    if ("IRDI".equals(entry.getKey())) {
-                        irdi =  (String)entry.getValue();
-                    }
-                    if ("ID".equals(entry.getKey())) {
-                        id = (BigDecimal)entry.getValue();
-                    }
-                    if ("VALUE".equals(entry.getKey())) {
-                        value = (String)entry.getValue();
-                    }
-                }
                 LOGGER.trace("Set irdi and property values in propertyValue instance then add to item");
                 propertyValue.setPropertyRef(irdi);
                 propertyValue = loadFromTypeAndUnitMap(id, value, propertyValue, propertyTypesAndValues);
@@ -254,21 +243,14 @@ public class SimpleQueryService extends AbstractQueryService {
      * Grabs all property ids from the property items.
      * @param listOfItems the big list of all items
      * @return a simple list with all property ids only.
+     * todo extract from PropStringObjT getId into interface PropObj or something
      */
-    private List<String> getPropertyIdsFromProperties(List<List<Map<String, Object>>> listOfItems) {
+    private List<String> getPropertyIdsFromProperties(List<List<PropStringObjT>> listOfItems) {
         List<String> propertyIds = new ArrayList<String>();
-        for (List<Map<String, Object>> propList : listOfItems) {
-            for (Map<String, Object> map : propList) {
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    LOGGER.info("key: " + entry.getKey());
-                    LOGGER.info("value: " + entry.getValue());
-                    if ("ID".equals(entry.getKey())) {
-                        LOGGER.info("found id: " + entry.getValue());
-                        BigDecimal value = (BigDecimal) entry.getValue();
-                        propertyIds.add(value.toPlainString());
-                        break;
-                    }
-                }
+        for (List<PropStringObjT> propList : listOfItems) {
+            for (PropStringObjT prop : propList) {
+                propertyIds.add(prop.getId().toString());
+                LOGGER.info("property id value: " + prop.getId());
             }
         }
         return propertyIds;
@@ -289,16 +271,16 @@ public class SimpleQueryService extends AbstractQueryService {
      *
      * @return a list of all items
      */
-    private List<List<Map<String,Object>>> loadItems() {
-        List<BigDecimal> listOfExternalIds = loadExternalIds();
+    private List<List<PropStringObjT>> loadItems() {
+        List<String> listOfExternalIds = loadExternalIds();
         // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
-        List<List<Map<String, Object>>> stringPropertyList = plibDao.loadStringPropertiesByExternalIds(listOfExternalIds);
+        List<List<PropStringObjT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
         //List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
 
         return stringPropertyList;
     }
 
-    private List<BigDecimal> loadExternalIds() {
+    private List<String> loadExternalIds() {
         return plibDao.readExternalProductIdsBy(enrichedQuery);
     }
 

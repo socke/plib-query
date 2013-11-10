@@ -1,11 +1,13 @@
 package de.feu.plib.dao;
 
+import de.feu.plib.dao.procedures.types.PropStringObjT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.processor.analyser.QueryKind;
 import de.feu.plib.xml.catalogue.CatalogueType;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public class FakePlibDao implements PlibDao {
     }
 
     @Override
-    public List<BigDecimal> readExternalProductIdsBy(Irdi irdi) {
+    public List<String> readExternalProductIdsBy(Irdi irdi) {
         return null;
     }
 
@@ -59,4 +61,11 @@ public class FakePlibDao implements PlibDao {
     public List<Map<String, Object>> loadTypeAndUnitOfPropertyBy(String propertyId) {
         return null;
     }
+
+    @Override
+    public List<List<PropStringObjT>> loadStringPropertiesBy(List<String> externalIds) {
+        return Collections.emptyList();
+    }
+
+
 }
