@@ -68,7 +68,7 @@ public class QueryProcessor implements QueryPipe {
     }
 
     /**
-     * TODO
+     * TODO isParametricQuery check if implementation is correct
      * Checks if the given query is a parametric query or not.
      *
      * @param query

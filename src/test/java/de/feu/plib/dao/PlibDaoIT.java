@@ -96,30 +96,6 @@ public class PlibDaoIT {
     }
 
     /**
-     * This is a bigger integration test.
-     * <ul>
-     *     <li>First create an irdi instance</li>
-     *     <li>create an enriched query</li>
-     *     <li>Then load the objects from the database with its properties</li>
-     *     <li>There should be the same number ob objects than with the previous check</li>
-     * </ul>
-     */
-    @Test
-    @Ignore("loadObjectsFrom is obsolte, maybe later reimplemented")
-    public void shouldReturnOneInstanceOfSkalpellWithTwoProperties() {
-        Irdi skalpellIrdi = createSkalpellIrdi();
-
-        List<String> externalProductIds = plib.readExternalProductIdsBy(skalpellIrdi);
-
-        EnrichedQuery query = createEnrichedQueryFrom(skalpellIrdi);
-        query.setType(QueryKind.SIMPLE);
-        CatalogueType catalogueType = plib.loadObjectsFrom(query);
-        List<ItemType> itemTypes = catalogueType.getItem();
-        assertEquals(externalProductIds.size(), itemTypes.size());
-        assertEquals(1, itemTypes.get(0).getPropertyValue().size());
-    }
-
-    /**
      * Test should return two items where the first one would be checked.
      * Should have two properties.
      */
@@ -134,14 +110,12 @@ public class PlibDaoIT {
         assertThatIrdiAndValueAreAvailable(valueTypeList.get(0).get(1).entrySet(), "0173-1#02-AAB011#1");
     }
 
-
     @Test
     public void testLoadStringPropertiesBy() {
         List<List<PropStringObjT>> propStringObjList = plib.loadStringPropertiesBy(createExternalIdsList());
         LOGGER.info("propStringObjList list: " + propStringObjList);
         assertEquals("should be one instance", 1, propStringObjList.size());
         assertEquals("should be two properties",2, propStringObjList.get(0).size());
-
     }
 
     /**
@@ -155,7 +129,6 @@ public class PlibDaoIT {
         assertTrue(propertyTypeAndUnit.size() == 1);
 
         assertThatUnitAndSubTypeAreAvailable(propertyTypeAndUnit);
-
     }
 
     private List<String> createExternalIdsList() {

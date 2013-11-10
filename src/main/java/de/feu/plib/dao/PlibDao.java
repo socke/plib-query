@@ -44,14 +44,6 @@ public interface PlibDao {
     List<String> readExternalProductIdsBy(Irdi irdi);
 
     /**
-     * Loads the Objects from the database by the {@link EnrichedQuery}.
-     *
-     * @param enrichedQuery the enriched Query.
-     * @return the catalogue holding the objects (items) the query.
-     */
-    CatalogueType loadObjectsFrom(EnrichedQuery enrichedQuery);
-
-    /**
      * Loads the string properties by the given external ids in the string list.
      * The external ids are needed as this is predefined by the procedures as IN parameter.
      * They look like "EXT_4000001", for the testdata usually with prefix EXT_

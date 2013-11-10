@@ -3,7 +3,8 @@ package de.feu.plib.processor.analyser;
 import de.feu.plib.xml.query.QueryType;
 
 /**
- * TODO: document file
+ * Simple query filter responsible for filtering simple queries.
+ * Add additional information to the query.
  */
 public class SimpleQueryFilter implements QueryFilter {
     @Override

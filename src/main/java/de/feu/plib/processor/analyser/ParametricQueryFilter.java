@@ -3,7 +3,7 @@ package de.feu.plib.processor.analyser;
 import de.feu.plib.xml.query.QueryType;
 
 /**
- * TODO: document file
+ * Parametric query filter, adds some additional information to the generic query from the client.
  */
 public class ParametricQueryFilter implements QueryFilter {
     @Override

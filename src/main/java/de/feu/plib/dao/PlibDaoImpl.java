@@ -57,6 +57,11 @@ public class PlibDaoImpl implements PlibDao {
         return externalIds;
     }
 
+    /**
+     * Get the external ids from the property with given irdi
+     * @param irdi the irdi of the property
+     * @return a list of external ids
+     */
     protected List<Map<String, Object>> getExternalIds(Irdi irdi) {
         return jdbcTemplate.queryForList(SQLQuery.GET_EXT_ID_SQL.getSql(), new Object[]{irdi.getIrdi()});
     }
@@ -69,10 +74,6 @@ public class PlibDaoImpl implements PlibDao {
             return true;
         }
         return false;
-    }
-
-    public boolean noObjectsExistsWithThis(Irdi irdi) {
-        return !doObjectsExistsWithThis(irdi);
     }
 
     @Transactional(readOnly = true)
@@ -104,19 +105,6 @@ public class PlibDaoImpl implements PlibDao {
         return companyNames;
     }
 
-
-    // TODO rename to loadStringPropertiesByExternalIds
-    // TODO do the logic in business logic
-    @Override
-    public CatalogueType loadObjectsFrom(EnrichedQuery enrichedQuery) {
-        CatalogueType catalogue = new CatalogueType();
-
-        if (noObjectsExistsWithThis(enrichedQuery)) {
-            return catalogue;
-        }
-
-        return catalogue;
-    }
 
     /**
      * Load the string properties plain from the database in the type the database returns.
@@ -161,7 +149,7 @@ public class PlibDaoImpl implements PlibDao {
     }
 
     /**
-     * TODO implement method
+     * TODO implement method loadNumberPropertiesByExternalIds
      * @param externalIds list of external ids
      * @return list of items which hold a list of property value pair
      */
@@ -186,47 +174,4 @@ public class PlibDaoImpl implements PlibDao {
         return propertyIdList;
     }
 
-    /**
-     * TODO the check is wrong here, must be done in business logic!
-     * @param entries
-     * @return
-     */
-    private PropertyValueType getKeyValueFromRow(Set<Map.Entry<String, Object>> entries) {
-        PropertyValueType property = new PropertyValueType();
-        for (Map.Entry<String, Object> propertyEntry : entries) {
-            if ("IRDI".equals(propertyEntry.getKey())) {
-                LOGGER.info("Property IRDI found in entry: " + propertyEntry.getValue());
-                property.setPropertyRef((String) propertyEntry.getValue());
-            }
-            if ("VALUE".equals(propertyEntry.getKey())) {
-                LOGGER.info("Property VALUE found in entry: " + propertyEntry.getValue());
-                // TODO: check which value type was given here and do a check
-                // TODO: e.g. integer, string, date, boolean...
-                StringValueType stringValueType = new StringValueType();
-                stringValueType.setValue((String) propertyEntry.getValue());
-                property.setStringValue(stringValueType);
-            }
-        }
-        return property;
-    }
-
-    public String callProcedure() {
-        jdbcTemplate.execute(new CallableStatementCreator() {
-                                 public CallableStatement createCallableStatement(Connection con) throws SQLException {
-                                     CallableStatement cs = con.prepareCall("{call MY_STORED_PROCEDURE(?, ?, ?)}");
-                                     //cs.setInt(1, ...); // first argument
-                                     //cs.setInt(2, ...); // second argument
-                                     //cs.setInt(3, ...); // third argument
-                                     return cs;
-                                 }
-                             },
-                new CallableStatementCallback() {
-                    public Object doInCallableStatement(CallableStatement cs) throws SQLException {
-                        cs.execute();
-                        return null; // Whatever is returned here is returned from the jdbcTemplate.execute method
-                    }
-                }
-        );
-        return null;
-    }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO: document file
+ * Fake Dao class used in unit tests
  */
 public class FakePlibDao implements PlibDao {
     @Override
@@ -32,17 +32,6 @@ public class FakePlibDao implements PlibDao {
 
     @Override
     public List<String> readExternalProductIdsBy(Irdi irdi) {
-        return null;
-    }
-
-    @Override
-    public CatalogueType loadObjectsFrom(EnrichedQuery enrichedQuery) {
-        if (QueryKind.SIMPLE.equals(enrichedQuery.getType())) {
-
-        }
-        if (QueryKind.PARAMETRIC.equals(enrichedQuery.getType())) {
-
-        }
         return null;
     }
 

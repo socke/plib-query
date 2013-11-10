@@ -1,7 +1,7 @@
 package de.feu.plib.processor.analyser;
 
 /**
- * TODO: document file
+ * Defines the Query kind.
  */
 public enum QueryKind {
     /** marks a simple query */
