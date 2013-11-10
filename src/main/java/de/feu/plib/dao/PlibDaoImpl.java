@@ -42,18 +42,18 @@ public class PlibDaoImpl implements PlibDao {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BigDecimal> readExternalProductIdsBy(Irdi irdi) {
-        List<BigDecimal> externalIds = new ArrayList<BigDecimal>();
+    public List<String> readExternalProductIdsBy(Irdi irdi) {
+        List<String> externalIds = new ArrayList<String>();
         List<Map<String, Object>> extIdList = getExternalIds(irdi);
         LOGGER.info("Read ext_product_ids of irdi: " + irdi.getIrdi());
         for (Map<String, Object> extIdRow : extIdList) {
             for (Map.Entry<String, Object> extIdEntry : extIdRow.entrySet()) {
                 LOGGER.info("Column name: " + extIdEntry.getKey());
                 LOGGER.info("Column value: " + extIdEntry.getValue());
-                externalIds.add((BigDecimal) extIdEntry.getValue());
+                externalIds.add((String) extIdEntry.getValue());
             }
         }
-        LOGGER.info(extIdList.toString());
+        LOGGER.info(extIdList);
         return externalIds;
     }
 
@@ -126,11 +126,8 @@ public class PlibDaoImpl implements PlibDao {
      * it really is a string!
      * @param externalIds list of external ids
      * @return list of items which hold a list of property value pair
-     * @deprecated use {@link #loadStringPropertiesBy(java.util.List)} instead. It is deprecated as we have use a plain
-     * SQL string for receiving the data from database. New Method loads it via Procedure (recommended)
      */
     @Override
-    @Deprecated
     public List<List<Map<String, Object>>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds) {
         LOGGER.info("external ids: " + externalIds);
         List<List<Map<String, Object>>> itemValueList = new ArrayList<List<Map<String, Object>>>();
@@ -150,9 +147,17 @@ public class PlibDaoImpl implements PlibDao {
      * @param externalIds list of external ids
      * @return List of PropStringObjT elements holding the
      */
-    public List<PropStringObjT> loadStringPropertiesBy(List<BigDecimal> externalIds) {
+    @Override
+    public List<List<PropStringObjT>> loadStringPropertiesBy(List<String> externalIds) {
+        List<List<PropStringObjT>> itemValueList = new ArrayList<List<PropStringObjT>>();
+
         GetObjString getObjString = new GetObjString(ds);
-        return Collections.emptyList();
+        for (String extId : externalIds) {
+            List<PropStringObjT> resultList = getObjString.execute(extId);
+            LOGGER.info("PropStringObjT list of external id: " + extId + " is " + resultList.toString());
+            itemValueList.add(resultList);
+        }
+        return itemValueList;
     }
 
     /**

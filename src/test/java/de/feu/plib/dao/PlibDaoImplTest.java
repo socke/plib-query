@@ -9,11 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: stefan
- * Date: 27.08.13
- * Time: 16:57
- * To change this template use File | Settings | File Templates.
+ * TODO create unit test - integration test already exists
  */
 
 public class PlibDaoImplTest {

@@ -7,6 +7,7 @@ import de.feu.plib.xml.catalogue.CatalogueType;
  */
 public abstract class AbstractQueryService {
 
+    CatalogueType catalogueType;
     /**
      * Loads the data from the database
      * @return the items as Catalogue

@@ -45,7 +45,5 @@ public class SimpleQueryServiceIT {
 
         assertEquals("0173-1#02-AAA762#1", items.get(0).getPropertyValue().get(0).getPropertyRef());
 
-        //assertEquals(new ItemType(), items.get(0));
-
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.SqlReturnType;
 import org.springframework.jdbc.object.StoredProcedure;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.*;
@@ -33,12 +34,12 @@ public class GetObjString extends StoredProcedure {
     /**
      * Expected length of columns. Must match the entries from oracle type definition.
      */
-    public static final int EXPECTED_COL_LENGTH = 6;
+    public static final int EXPECTED_COL_LENGTH = 7;
 
     /**
      * Logger instance
      */
-    private static Logger LOGGER = Logger.getLogger(TestProcedure.class);
+    private static Logger LOGGER = Logger.getLogger(GetObjString.class);
 
     /**
      * Constructor declares the parameters
@@ -92,22 +93,25 @@ public class GetObjString extends StoredProcedure {
                 PropStringObjT propertyEntry = new PropStringObjT();
 
                 if (null != cols[0]) {
-                    propertyEntry.setIrdi(cols[0].toString());
+                    propertyEntry.setId(((BigDecimal) cols[0]).longValue());
                 }
                 if (null != cols[1]) {
-                    propertyEntry.setValue(cols[1].toString());
+                    propertyEntry.setIrdi(cols[1].toString());
                 }
                 if (null != cols[2]) {
-                    propertyEntry.setUnit(cols[2].toString());
+                    propertyEntry.setValue(cols[2].toString());
                 }
                 if (null != cols[3]) {
-                    propertyEntry.setPrefix(cols[3].toString());
+                    propertyEntry.setUnit(cols[3].toString());
                 }
                 if (null != cols[4]) {
-                    propertyEntry.setTolerance((Long) cols[4]);
+                    propertyEntry.setPrefix(cols[4].toString());
                 }
                 if (null != cols[5]) {
-                    propertyEntry.setValueId((Long) cols[5]);
+                    propertyEntry.setTolerance((Long) cols[5]);
+                }
+                if (null != cols[6]) {
+                    propertyEntry.setValueId((Long) cols[6]);
                 }
                 return propertyEntry;
             }

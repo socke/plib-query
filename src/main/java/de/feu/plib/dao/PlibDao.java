@@ -1,5 +1,6 @@
 package de.feu.plib.dao;
 
+import de.feu.plib.dao.procedures.types.PropStringObjT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.xml.catalogue.CatalogueType;
@@ -40,7 +41,7 @@ public interface PlibDao {
      * @param irdi of the class where
      * @return list containing external product ids.
      */
-    List<BigDecimal> readExternalProductIdsBy(Irdi irdi);
+    List<String> readExternalProductIdsBy(Irdi irdi);
 
     /**
      * Loads the Objects from the database by the {@link EnrichedQuery}.
@@ -55,9 +56,13 @@ public interface PlibDao {
      * The external ids are needed as this is predefined by the procedures as IN parameter.
      * They look like "EXT_4000001", for the testdata usually with prefix EXT_
      *
+     * @deprecated use {@link #loadStringPropertiesBy(java.util.List)} instead. It is deprecated as we have use a plain
+     * SQL string for receiving the data from database. New Method loads it via Procedure (recommended)
+     *
      * @param externalIds the external ids for which the string properties should be loaded
      * @return a list of propertyvaluetype
      */
+    @Deprecated
     List<List<Map<String, Object>>> loadStringPropertiesByExternalIds(List<BigDecimal> externalIds);
 
     /**
@@ -73,4 +78,17 @@ public interface PlibDao {
      * Load the units and the types of a property by given id.
      */
     List<Map<String, Object>> loadTypeAndUnitOfPropertyBy(String propertyId);
+
+
+    /**
+     * Loads the string properties by the given external ids in the string list.
+     * The external ids are needed as this is predefined by the procedures as IN parameter.
+     * They look like "EXT_4000001", for the testdata usually with prefix EXT_
+     * Makes usage of the procedure calls, so thats the reason for the PropStringObjT type, which holds the
+     * item values as defined in the procedure.
+     *
+     * @param externalIds the external ids for which the string properties should be loaded
+     * @return a list of propertyvaluetype
+     */
+    List<List<PropStringObjT>> loadStringPropertiesBy(List<String> externalIds);
 }
