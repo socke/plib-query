@@ -6,7 +6,7 @@ package de.feu.plib.xml;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
 import de.feu.plib.xml.catalogue.PropertyValueType;
-import de.feu.plib.xml.query.QueryType;
+import de.feu.plib.xml.query.*;
 import de.feu.plib.xml.value.BooleanValueType;
 import org.apache.log4j.Logger;
 import org.junit.After;

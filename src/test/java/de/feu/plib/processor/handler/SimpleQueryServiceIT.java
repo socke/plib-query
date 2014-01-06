@@ -36,7 +36,7 @@ public class SimpleQueryServiceIT {
         query.setClassRef("0173-1#01-BAD803#2");
         EnrichedQuery enrichedQuery = new EnrichedQuery(query);
         simpleQueryService.setEnrichedQuery(enrichedQuery);
-        CatalogueType catalogue = simpleQueryService.loadData();
+        CatalogueType catalogue = simpleQueryService.loadDataWithIRDIOnly();
 
         assertEquals(2, catalogue.getItem().size());
 

@@ -1,8 +1,10 @@
 package de.feu.plib.processor.handler;
 
 import de.feu.plib.dao.procedures.types.PropStringObjT;
+import de.feu.plib.processor.analyser.BaseIrdi;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.dao.PlibDao;
+import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
 import de.feu.plib.xml.catalogue.PropertyValueType;
@@ -32,29 +34,21 @@ public class SimpleQueryService extends AbstractQueryService {
     @Qualifier(value = "plibDao")
     private PlibDao plibDao;
 
-    private EnrichedQuery enrichedQuery;
-
-    public EnrichedQuery getEnrichedQuery() {
-        return enrichedQuery;
+    public SimpleQueryService() {
     }
-
-    public void setEnrichedQuery(EnrichedQuery enrichedQuery) {
-        this.enrichedQuery = enrichedQuery;
-    }
-
-    public SimpleQueryService() {}
 
     public SimpleQueryService(EnrichedQuery enrichedQuery) {
-        this.enrichedQuery = enrichedQuery;
+        this.setEnrichedQuery(enrichedQuery);
     }
 
     /**
      * Checks if objects exists in database, then load the items of the objects and fills each item
      * with its properties.
      * Then add all the items to the catalogue object
+     *
      * @return CatalogueType holding all items with properties
      */
-    public CatalogueType loadData() {
+    public CatalogueType loadDataWithIRDIOnly() {
 
         catalogueType = new CatalogueType();
 
@@ -77,6 +71,76 @@ public class SimpleQueryService extends AbstractQueryService {
     }
 
     /**
+     * First get irdis of class_ref of all items.
+     * Load the data from the items with that class_refs.
+     * Fill the catalogue with all items.
+     *
+     * @return
+     */
+    @Override
+    public CatalogueType loadDataWithItemsOnly() {
+
+        catalogueType = new CatalogueType();
+
+        if (objectsExistInDatabase(new BaseIrdi(getEnrichedQuery().getQuery().getItem().getClassRef()))) {
+            LOGGER.trace("Objects exist in database");
+            List<List<PropStringObjT>> listOfItems = loadItems();
+            LOGGER.trace("Items loaded from db");
+
+            List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
+            LOGGER.trace("property ids grabbed from properties");
+
+            List<Map<String, Object>> propertyTypesAndUnits = loadTypesAndUnitsFromPropertyIds(propertyIds);
+            LOGGER.trace("property types and values loaded from db");
+
+            //  get all property data from item in query then check if we have an item in result with the property ref and the value
+            if (allPropertiesExistWithValuesIn(listOfItems)) {
+                // if so we must put all that data together, items + irdi + properties of the items + their irdis + all
+                // properties and units. These must be mapped to the catalogue model.
+                mapItemDataToCatalogue(listOfItems, propertyTypesAndUnits);
+            }
+        }
+
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    private boolean allPropertiesExistWithValuesIn(List<List<PropStringObjT>> listOfItems) {
+        boolean allPropertiesExists = true;
+
+        List<PropertyValueType> allPropertyValues = getEnrichedQuery().getQuery().getItem().getPropertyValue();
+
+        // TODO currently we only check the string property, need to to that for all other properties.
+        for (PropertyValueType propType : allPropertyValues) {
+            String queryPropertyRefIrdi = propType.getPropertyRef();
+            String queryItemvalue = propType.getStringValue().getValue();
+
+            for (List<PropStringObjT> propList : listOfItems) {
+                // check if one of the property values is not in the database of this item
+                // if so then delivery empty catalogue, as we data is not valid
+                for (PropStringObjT propStringObj : propList) {
+                    String irdi = propStringObj.getIrdi();
+                    String value = propStringObj.getValue();
+
+                    if (!queryItemvalue.equals(value) || !queryPropertyRefIrdi.equals(irdi)) {
+                        allPropertiesExists = false;
+                    }
+                }
+            }
+
+        }
+
+        allPropertyValues.get(0).getStringValue().getValue();
+        allPropertyValues.get(0).getPropertyRef();
+        return allPropertiesExists;
+    }
+
+    @Override
+    public CatalogueType loadDataWithProjection() {
+        return null;
+    }
+
+    /**
      * Maps the collected data to add it finally to the return type catalogue model.
      *
      * @param listOfItems
@@ -85,8 +149,8 @@ public class SimpleQueryService extends AbstractQueryService {
     private void mapItemDataToCatalogue(List<List<PropStringObjT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues) {
         for (List<PropStringObjT> propList : listOfItems) {
             ItemType item = new ItemType();
-            item.setClassRef(enrichedQuery.getIrdi());
-            LOGGER.info("set class ref: " + enrichedQuery.getIrdi());
+            item.setClassRef(getEnrichedQuery().getIrdi());
+            LOGGER.info("set class ref: " + getEnrichedQuery().getIrdi());
 
             for (PropStringObjT propStringObj : propList) {
                 String irdi = propStringObj.getIrdi();
@@ -134,24 +198,24 @@ public class SimpleQueryService extends AbstractQueryService {
                 if (StringUtils.isNotEmpty(subType)) {
                     // these are all actually available types in database.
                     // TODO create mapping enum so that it can be mapped automatically
-                    if ("real_type".equals(subType))  {
+                    if ("real_type".equals(subType)) {
                         RealValueType realValue = new RealValueType();
                         realValue.setValue(Double.valueOf(value));
                         propertyValue.setRealValue(realValue);
                     }
-                    if ("int_type".equals(subType))  {
+                    if ("int_type".equals(subType)) {
                         IntegerValueType intType = new IntegerValueType();
                         intType.setValue(Integer.valueOf(value));
                         propertyValue.setIntegerValue(intType);
                     }
-                    if ("string_type".equals(subType))  {
+                    if ("string_type".equals(subType)) {
                         StringValueType stringType = new StringValueType();
                         stringType.setValue(String.valueOf(value));
                         propertyValue.setStringValue(stringType);
                     }
                     // TODO see 29002-10 chapter 6.5
                     // we have here defined measure_type with prefix real.
-                    if ("real_measure_type".equals(subType))  {
+                    if ("real_measure_type".equals(subType)) {
                         // TODO we have three measure types and must decide which to use
                         if (boundsAreSet(bound1, bound2)) {
                             /*
@@ -163,7 +227,7 @@ public class SimpleQueryService extends AbstractQueryService {
                             setPropertyValueByBounds(propertyValue, bound1, bound2);
                         }
 
-                        if (!boundsAreSet(bound1, bound2) ) {
+                        if (!boundsAreSet(bound1, bound2)) {
                             setPropertyValue(value, propertyValue);
                         }
 
@@ -182,7 +246,7 @@ public class SimpleQueryService extends AbstractQueryService {
 
                         //propertyValue.setMeasureSingleNumberValue();
                     }
-                    if ("non_quantitative_code_type".equals(subType))  {
+                    if ("non_quantitative_code_type".equals(subType)) {
                         // TODO non_quantitative_code_type - what kind of type is this?
                     }
                 }
@@ -241,9 +305,10 @@ public class SimpleQueryService extends AbstractQueryService {
 
     /**
      * Grabs all property ids from the property items.
+     *
      * @param listOfItems the big list of all items
      * @return a simple list with all property ids only.
-     * todo extract from PropStringObjT getId into interface PropObj or something
+     *         todo extract from PropStringObjT getId into interface PropObj or something
      */
     private List<String> getPropertyIdsFromProperties(List<List<PropStringObjT>> listOfItems) {
         List<String> propertyIds = new ArrayList<String>();
@@ -258,9 +323,9 @@ public class SimpleQueryService extends AbstractQueryService {
 
     /**
      * Purpose: Method load all konkrete Item instances.
-     *
+     * <p/>
      * First loads all external ids by given query, then loads all items of this ids.
-     *
+     * <p/>
      * The loading of the external ids is necessary, as the procedures provided by the plib database do not allow
      * to pass the IRDI.
      * It would be more efficient if that would be done in the database, however, we have to pass the
@@ -281,11 +346,29 @@ public class SimpleQueryService extends AbstractQueryService {
     }
 
     private List<String> loadExternalIds() {
-        return plibDao.readExternalProductIdsBy(enrichedQuery);
+        return plibDao.readExternalProductIdsBy(getEnrichedQuery());
+    }
+
+    private List<String> loadExternalIds(Irdi irdi) {
+        return plibDao.readExternalProductIdsBy(irdi);
     }
 
     private boolean objectsExistInDatabase() {
-        return plibDao.doObjectsExistsWithThis(enrichedQuery);
+        return plibDao.doObjectsExistsWithThis(getEnrichedQuery());
+    }
+
+    private boolean objectsExistInDatabase(Irdi irdi) {
+        return plibDao.doObjectsExistsWithThis(irdi);
+    }
+
+    private boolean objectsExistInDatabase(List<Irdi> irdiList) {
+        boolean objectsExists = false;
+        for (Irdi irdi : irdiList) {
+            if (plibDao.doObjectsExistsWithThis(irdi)) {
+                return true;
+            }
+        }
+        return objectsExists;
     }
 
     public PlibDao getPlibDao() {

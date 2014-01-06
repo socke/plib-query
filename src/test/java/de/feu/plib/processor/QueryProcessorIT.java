@@ -36,11 +36,6 @@ public class QueryProcessorIT extends AbstractXMLTest {
     }
 
     @Test
-    public void shouldBeFalseWithEmptyQuery() throws Exception {
-        assertFalse(queryProcessor.isSimpleQuery(new QueryType()));
-    }
-
-    @Test
     public void shouldBeSimpleQueryWithOnlyIrdi() throws Exception {
         QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
