@@ -11,4 +11,14 @@ public class FakeParametricQueryService extends AbstractQueryService {
     public CatalogueType loadDataWithIRDIOnly() {
         return new CatalogueType();
     }
+
+    @Override
+    public CatalogueType loadDataWithItemsOnly() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public CatalogueType loadDataWithProjection() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

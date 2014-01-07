@@ -127,7 +127,6 @@ public class SimpleQueryService extends AbstractQueryService {
                     }
                 }
             }
-
         }
 
         allPropertyValues.get(0).getStringValue().getValue();

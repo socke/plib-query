@@ -24,7 +24,7 @@ import de.feu.plib.xml.query.QueryType;
  * Send a post request to this URI with the XML file as POST payload.
  */
 @Path("/ws")
-public class QueryService {
+public class QueryRESTService {
 
     /** Marshaller instance used for converting xml to objects and vice versa */
     private XMLMarshaller marshaller;
@@ -33,13 +33,13 @@ public class QueryService {
     private QueryPipe queryPipe;
 
     /** Logger instance */
-    private static final Logger LOGGER = Logger.getLogger(QueryService.class);
+    private static final Logger LOGGER = Logger.getLogger(QueryRESTService.class);
 
     /** Application context for receiving beans */
     private ApplicationContext context;
 
     /** Constructor which ensures correct instantiation of needed beans */
-    public QueryService() {
+    public QueryRESTService() {
         this.context = initializeContext();
         this.marshaller = getMarshaller();
         this.queryPipe = getQueryPipe();
