@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.xml.ws.Endpoint;
 
 /**
- * TODO document class QueryServer
+ * Is responsible for creating the SOAP Webserver.
  */
 public class QueryServer {
     /** Logger instance */
