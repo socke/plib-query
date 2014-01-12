@@ -20,38 +20,43 @@ xjc -b binding.xjb -d gen-src query.xsd
                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
                jaxb:version="2.0">
-  <jaxb:bindings schemaLocation="query.xsd" node="/xsd:schema">
-    <jaxb:schemaBindings>
-      <jaxb:package name="de.feu.plib.xml.query" />
-    </jaxb:schemaBindings>
-  </jaxb:bindings>
-  <jaxb:bindings schemaLocation="basic.xsd" node="/xsd:schema">
-    <jaxb:schemaBindings>
-      <jaxb:package name="de.feu.plib.xml.basic" />
-    </jaxb:schemaBindings>
-  </jaxb:bindings>
-  <jaxb:bindings schemaLocation="catalogue.xsd" node="/xsd:schema">
-    <jaxb:schemaBindings>
-      <jaxb:package name="de.feu.plib.xml.catalogue" />
-    </jaxb:schemaBindings>
-  </jaxb:bindings>
-  <jaxb:bindings schemaLocation="identifier.xsd" node="/xsd:schema">
-    <jaxb:schemaBindings>
-      <jaxb:package name="de.feu.plib.xml.identifier" />
-    </jaxb:schemaBindings>
-  </jaxb:bindings>
-  <jaxb:bindings schemaLocation="value.xsd" node="/xsd:schema">
-    <jaxb:schemaBindings>
-      <jaxb:package name="de.feu.plib.xml.value" />
-    </jaxb:schemaBindings>
-  </jaxb:bindings> 
-  
-      <jaxb:globalBindings>
-         <!-- let the classes implement serialiseable -->
-        <jaxb:serializable uid="1" />
-          <!-- let the classes extend own abstract class for providing some extra functionality for each one -->
- <!--       <xjc:superClass name="de.feu.plib.xml.AbstractXMLType" /> -->
-     </jaxb:globalBindings>  
-     
-            
+    <jaxb:bindings schemaLocation="query.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.feu.plib.xml.query"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="basic.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.feu.plib.xml.basic"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="catalogue.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.feu.plib.xml.catalogue"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="identifier.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.feu.plib.xml.identifier"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="value.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.feu.plib.xml.value"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="error.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.feu.plib.xml.error"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+    <jaxb:globalBindings>
+        <!-- let the classes implement serialiseable -->
+        <jaxb:serializable uid="1"/>
+        <!-- let the classes extend own abstract class for providing some extra functionality for each one -->
+        <!--       <xjc:superClass name="de.feu.plib.xml.AbstractXMLType" /> -->
+    </jaxb:globalBindings>
+
+
 </jaxb:bindings>

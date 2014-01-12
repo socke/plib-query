@@ -77,7 +77,6 @@ public class SimpleQueryService extends AbstractQueryService {
      *
      * @return CatalogueType holding all items with properties
      */
-    @Override
     public CatalogueType loadDataWithItemsOnly() {
 
         catalogueType = new CatalogueType();
@@ -106,7 +105,6 @@ public class SimpleQueryService extends AbstractQueryService {
         return catalogueType;
     }
 
-    @Override
     public CatalogueType loadDataWithProjection() {
         catalogueType = new CatalogueType();
 

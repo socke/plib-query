@@ -13,4 +13,6 @@ public interface QueryFilter {
      * @return enriched query with additional information about the content and type of the query
      */
     EnrichedQuery filter(QueryType query);
+
+
 }

@@ -20,23 +20,4 @@ public abstract class AbstractQueryService {
     public void setEnrichedQuery(EnrichedQuery enrichedQuery) {
         this.enrichedQuery = enrichedQuery;
     }
-
-    /**
-     * Loads the data from the database with only IRDI given
-     * @return the items as Catalogue
-     */
-    public abstract CatalogueType loadDataWithIRDIOnly();
-
-
-    /**
-     * Loads the data from the database with only Items given
-     * @return the items as Catalogue
-     */
-    public abstract CatalogueType loadDataWithItemsOnly();
-
-    /**
-     * Loads the data from the database with Projection query
-     * @return the items as Catalogue
-     */
-    public abstract CatalogueType loadDataWithProjection();
 }

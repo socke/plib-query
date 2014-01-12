@@ -52,4 +52,6 @@
     <bean id="parametricQueryAnalyser" class="de.feu.plib.processor.analyser.ParametricQueryFilter" />
 
     <bean id="simpleQueryService" class="de.feu.plib.processor.handler.SimpleQueryService" />
+
+    <bean id="parametricQueryService" class="de.feu.plib.processor.handler.ParametricQueryService" />
 </beans>

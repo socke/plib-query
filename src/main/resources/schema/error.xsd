@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+error.xsd - Additional simple Schema for adding to another Schema. Allows Error Messages. 
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:err="error" targetNamespace="error" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="errorType">
+		<xs:sequence>
+			<xs:element name="shortErrorMessage" type="err:shortErrorMessageType" />
+			<xs:element name="longErrorMessage" type="err:longErrorMessageType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="shortErrorMessageType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="longErrorMessageType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+</xs:schema>

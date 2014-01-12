@@ -5,8 +5,10 @@ package de.feu.plib.processor;
 
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.processor.analyser.QueryFilter;
+import de.feu.plib.processor.handler.ParametricQueryService;
 import de.feu.plib.processor.handler.SimpleQueryService;
 import de.feu.plib.xml.catalogue.CatalogueType;
+import de.feu.plib.xml.error.ErrorType;
 import de.feu.plib.xml.query.QueryType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -37,47 +39,54 @@ public class QueryProcessor implements QueryPipe {
     @Qualifier(value = "simpleQueryService")
     private SimpleQueryService simpleQueryService;
 
+    @Autowired
+    @Qualifier(value = "parametricQueryService")
+    private ParametricQueryService parametricQueryService;
+
     @Override
     public CatalogueType filter(QueryType query) {
 
         if (isSimpleQuery(query)) {
 
-            enrichQuery(query);
+            enrichQuery(query, simpleQueryFilter);
 
             if (isIRDIOnlyQuery(query)) {
-                CatalogueType catalogueType = simpleQueryService.loadDataWithIRDIOnly();
-                return catalogueType;
+                return simpleQueryService.loadDataWithIRDIOnly();
             }
             if (isItemOnlyQuery(query)) {
-                CatalogueType catalogueType = simpleQueryService.loadDataWithItemsOnly();
-                return catalogueType;
+                return simpleQueryService.loadDataWithItemsOnly();
             }
             if (isProjectionQuery(query)) {
-                // TODO implement path
-                CatalogueType catalogueType = simpleQueryService.loadDataWithProjection();
-                return catalogueType;
+                return simpleQueryService.loadDataWithProjection();
             }
             if (isProjectionOnItemQuery(query)) {
                 // TODO implement path
-
             }
         }
         if (isParametricQuery(query)) {
+
+            enrichQuery(query, parametricQueryFilter);
+
             if (isIRDIOnlyQuery(query)) {
-                parametricQueryFilter.filter(query);
+                return parametricQueryService.loadDataWithIRDIOnly();
             }
             // items are ignored, does not make sense, so handle projection with item and irdi as projection case
             if (isProjectionQuery(query) || isProjectionOnItemWithIRDI(query)) {
-
+                return parametricQueryService.loadDataWithProjection();
             }
         }
         // if it is neither a simple nor a parametric query, it is not supported, thus return emtpy result.
         LOGGER.warn("No query type recognized - empty catalogue will be returned");
-        return emptyCatalogue();
+
+        CatalogueType catalogueType = emptyCatalogue();
+        ErrorType errorType = new ErrorType();
+        errorType.setShortErrorMessage("No query type recognized - empty catalogue will be returned");
+
+        return catalogueType;
     }
 
-    private void enrichQuery(QueryType query) {
-        EnrichedQuery enrichedQuery = simpleQueryFilter.filter(query);
+    private void enrichQuery(QueryType query, QueryFilter queryFilter) {
+        EnrichedQuery enrichedQuery = queryFilter.filter(query);
         simpleQueryService.setEnrichedQuery(enrichedQuery);
     }
 

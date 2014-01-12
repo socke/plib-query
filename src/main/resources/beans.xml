@@ -55,4 +55,6 @@
 
     <bean id="simpleQueryService" class="de.feu.plib.processor.handler.SimpleQueryService" />
 
+    <bean id="parametricQueryService" class="de.feu.plib.processor.handler.ParametricQueryService" />
+
 </beans>

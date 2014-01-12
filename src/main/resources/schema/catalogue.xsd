@@ -14,21 +14,27 @@ In addition, any modified copy of the Schema shall include the following notice:
 
 THIS SCHEMA HAS BEEN MODIFIED FROM THE SCHEMA DEFINED IN ISO/TS 29002-10, AND SHOULD NOT BE INTERPRETED AS COMPLYING WITH THAT STANDARD.
 
+Note: 
+Customisation by Stefan Sobek: Added error.xsd
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:cat="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:catalogue" xmlns:val="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:value" xmlns:bas="urn:iso:std:iso:ts:29002:-4:ed-1:tech:xml-schema:basic" xmlns:id="urn:iso:std:iso:ts:29002:-5:ed-1:tech:xml-schema:identifier" targetNamespace="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:catalogue" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:cat="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:catalogue" xmlns:val="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:value" xmlns:bas="urn:iso:std:iso:ts:29002:-4:ed-1:tech:xml-schema:basic" xmlns:id="urn:iso:std:iso:ts:29002:-5:ed-1:tech:xml-schema:identifier" xmlns:err="error" targetNamespace="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:catalogue" elementFormDefault="qualified">
 	<xs:import namespace="urn:iso:std:iso:ts:29002:-5:ed-1:tech:xml-schema:identifier" schemaLocation="identifier.xsd"/>
 	<xs:import namespace="urn:iso:std:iso:ts:29002:-4:ed-1:tech:xml-schema:basic" schemaLocation="basic.xsd"/>
 	<xs:import namespace="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:value" schemaLocation="value.xsd"/>
+	<!-- added error namespace, this is customized!!! -->
+	<xs:import namespace="error" schemaLocation="error.xsd"/>
 	<!-- Global Elements -->
 	<xs:element name="catalogue" type="cat:catalogue_Type"/>
 	<xs:element name="item" type="cat:item_Type"/>
 	<xs:element name="property_value" type="cat:property_value_Type"/>
 	<xs:element name="reference" type="cat:reference_Type"/>
+	<xs:element name="error" type="err:errorType"/>
 	<!-- Global Types -->
 	<!-- Catalogue -->
 	<xs:complexType name="catalogue_Type">
 		<xs:sequence>
 			<xs:element ref="cat:item" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="cat:error" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!-- Item -->
@@ -66,8 +72,8 @@ THIS SCHEMA HAS BEEN MODIFIED FROM THE SCHEMA DEFINED IN ISO/TS 29002-10, AND SH
 		</xs:sequence>
 		<xs:attribute name="organization_ref" type="id:IRDI_type" use="optional"/>
 		<xs:attribute name="organization_code" type="xs:string" use="optional"/>
+		<xs:attribute name="reference_number" type="xs:string" use="required"/>
 		<!-- Constraint: organization_ref or organization_code (or both) must be specified. -->
 		<!-- Constraint: If both organization_ref and organization_code are specified, they must denote the same organization. -->
-		<xs:attribute name="reference_number" type="xs:string" use="required"/>
 	</xs:complexType>
 </xs:schema>
