@@ -44,6 +44,7 @@ public class SimpleQueryServiceIT {
         LOGGER.info("items : " + items);
 
         assertEquals("0173-1#02-AAA762#1", items.get(0).getPropertyValue().get(0).getPropertyRef());
-
     }
+
+
 }

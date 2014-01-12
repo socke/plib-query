@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,18 +74,22 @@ public class SimpleQueryService extends AbstractQueryService {
     /**
      * First get irdis of class_ref of all items.
      * Load the data from the items with that class_refs.
-     * Fill the catalogue with all items.
+     * Check if the the properties match.
+     * If so then fill the catalogue with all items, if not the data does not match
+     * (validation)
      *
-     * @return
+     * @return CatalogueType holding all items with properties
      */
     @Override
     public CatalogueType loadDataWithItemsOnly() {
 
         catalogueType = new CatalogueType();
 
-        if (objectsExistInDatabase(new BaseIrdi(getEnrichedQuery().getQuery().getItem().getClassRef()))) {
+        Irdi irdi = new BaseIrdi(getEnrichedQuery().getQuery().getItem().getClassRef());
+
+        if (objectsExistInDatabase(irdi)) {
             LOGGER.trace("Objects exist in database");
-            List<List<PropStringObjT>> listOfItems = loadItems();
+            List<List<PropStringObjT>> listOfItems = loadItems(irdi);
             LOGGER.trace("Items loaded from db");
 
             List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
@@ -97,41 +102,153 @@ public class SimpleQueryService extends AbstractQueryService {
             if (allPropertiesExistWithValuesIn(listOfItems)) {
                 // if so we must put all that data together, items + irdi + properties of the items + their irdis + all
                 // properties and units. These must be mapped to the catalogue model.
-                mapItemDataToCatalogue(listOfItems, propertyTypesAndUnits);
+                mapItemDataToCatalogue(listOfItems, propertyTypesAndUnits, irdi.getIrdi());
             }
         }
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return catalogueType;
     }
 
 
     private boolean allPropertiesExistWithValuesIn(List<List<PropStringObjT>> listOfItems) {
-        boolean allPropertiesExists = true;
-
         List<PropertyValueType> allPropertyValues = getEnrichedQuery().getQuery().getItem().getPropertyValue();
 
-        // TODO currently we only check the string property, need to to that for all other properties.
+        // TODO currently we only check the string and real properties, need to do that for all other properties as well.
+        Map<PropertyValueType, Boolean> valueFoundMap = new HashMap<PropertyValueType, Boolean>();
+
         for (PropertyValueType propType : allPropertyValues) {
+            valueFoundMap.put(propType, Boolean.FALSE);
             String queryPropertyRefIrdi = propType.getPropertyRef();
-            String queryItemvalue = propType.getStringValue().getValue();
 
-            for (List<PropStringObjT> propList : listOfItems) {
-                // check if one of the property values is not in the database of this item
-                // if so then delivery empty catalogue, as we data is not valid
-                for (PropStringObjT propStringObj : propList) {
-                    String irdi = propStringObj.getIrdi();
-                    String value = propStringObj.getValue();
+            if (null != propType.getMeasureSingleNumberValue()) {
+                Double queryItemvalue = propType.getMeasureSingleNumberValue().getRealValue().getValue();
+                // TODO implement for all other subtypes of MeasuredSingleNumberValue
 
-                    if (!queryItemvalue.equals(value) || !queryPropertyRefIrdi.equals(irdi)) {
-                        allPropertiesExists = false;
+                for (List<PropStringObjT> propList : listOfItems) {
+                    for (PropStringObjT propStringObj : propList) {
+                        String irdi = propStringObj.getIrdi();
+                        Double value = Double.valueOf(propStringObj.getValue());
+
+                        if (queryItemvalue.equals(value) && queryPropertyRefIrdi.equals(irdi)) {
+                            valueFoundMap.remove(propType);
+                            valueFoundMap.put(propType, Boolean.TRUE);
+                        }
                     }
                 }
             }
+
+            if (null != propType.getStringValue()) {
+
+                String queryItemvalue = propType.getStringValue().getValue();
+
+                for (List<PropStringObjT> propList : listOfItems) {
+                    for (PropStringObjT propStringObj : propList) {
+                        String irdi = propStringObj.getIrdi();
+                        String value = propStringObj.getValue();
+
+                        if (queryItemvalue.equals(value) && queryPropertyRefIrdi.equals(irdi)) {
+                            valueFoundMap.remove(propType);
+                            valueFoundMap.put(propType, Boolean.TRUE);
+                        }
+                    }
+                }
+            }
+
+            if (null != propType.getRealValue()) {
+
+                Double queryItemvalue = propType.getRealValue().getValue();
+
+                for (List<PropStringObjT> propList : listOfItems) {
+                    for (PropStringObjT propStringObj : propList) {
+                        String irdi = propStringObj.getIrdi();
+                        Double value = Double.valueOf(propStringObj.getValue());
+
+                        if (queryItemvalue.equals(value) && queryPropertyRefIrdi.equals(irdi)) {
+                            valueFoundMap.remove(propType);
+                            valueFoundMap.put(propType, Boolean.TRUE);
+                        }
+                    }
+                }
+            }
+            if (null != propType.getBagValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getBooleanValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getComplexValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getCompositeValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getControlledValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getCurrencyValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getDateTimeValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getDateValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getEnvironment()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getFileValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getIntegerValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getItemReferenceValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getLocalizedTextValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getMeasureQualifiedNumberValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getMeasureRangeValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getNullValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getOneOf()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getRationalValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getSequenceValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getSetValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getTimeValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getYearMonthValue()) {
+                // TODO implement value type check
+            }
+            if (null != propType.getYearValue()) {
+                // TODO implement value type check
+            }
         }
 
-        allPropertyValues.get(0).getStringValue().getValue();
-        allPropertyValues.get(0).getPropertyRef();
-        return allPropertiesExists;
+        // check if we have one not found property in the map where we marked the searched properties
+        // if so, then return false
+        for (Map.Entry<PropertyValueType, Boolean> entry : valueFoundMap.entrySet()) {
+            if (Boolean.FALSE.equals(entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -141,15 +258,17 @@ public class SimpleQueryService extends AbstractQueryService {
 
     /**
      * Maps the collected data to add it finally to the return type catalogue model.
+     * Will be mapped into {@link #catalogueType}
      *
      * @param listOfItems
      * @param propertyTypesAndValues
+     * @param classIrdi
      */
-    private void mapItemDataToCatalogue(List<List<PropStringObjT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues) {
+    private void mapItemDataToCatalogue(List<List<PropStringObjT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues, String classIrdi) {
         for (List<PropStringObjT> propList : listOfItems) {
             ItemType item = new ItemType();
-            item.setClassRef(getEnrichedQuery().getIrdi());
-            LOGGER.info("set class ref: " + getEnrichedQuery().getIrdi());
+            item.setClassRef(classIrdi);
+            LOGGER.info("set class ref: " + classIrdi);
 
             for (PropStringObjT propStringObj : propList) {
                 String irdi = propStringObj.getIrdi();
@@ -167,6 +286,17 @@ public class SimpleQueryService extends AbstractQueryService {
             LOGGER.info("Add item to catalogue: " + item);
             catalogueType.getItem().add(item);
         }
+    }
+
+    /**
+     * Maps the collected data to add it finally to the return type catalogue model.
+     * Delegates to {@link #mapItemDataToCatalogue(java.util.List, java.util.List, String)}
+     *
+     * @param listOfItems
+     * @param propertyTypesAndValues
+     */
+    private void mapItemDataToCatalogue(List<List<PropStringObjT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues) {
+        mapItemDataToCatalogue(listOfItems, propertyTypesAndValues, getEnrichedQuery().getIrdi());
     }
 
     private PropertyValueType loadFromTypeAndUnitMap(BigDecimal id, String value, PropertyValueType propertyValue, List<Map<String, Object>> propertyTypesAndValues) {
@@ -212,7 +342,7 @@ public class SimpleQueryService extends AbstractQueryService {
                         stringType.setValue(String.valueOf(value));
                         propertyValue.setStringValue(stringType);
                     }
-                    // TODO see 29002-10 chapter 6.5
+                    // TODO see 290002-10 chapter 6.5
                     // we have here defined measure_type with prefix real.
                     if ("real_measure_type".equals(subType)) {
                         // TODO we have three measure types and must decide which to use
@@ -243,7 +373,6 @@ public class SimpleQueryService extends AbstractQueryService {
                             propertyValue.setMeasureQualifiedNumberValue(mqnv);
                         }
 
-                        //propertyValue.setMeasureSingleNumberValue();
                     }
                     if ("non_quantitative_code_type".equals(subType)) {
                         // TODO non_quantitative_code_type - what kind of type is this?
@@ -337,6 +466,15 @@ public class SimpleQueryService extends AbstractQueryService {
      */
     private List<List<PropStringObjT>> loadItems() {
         List<String> listOfExternalIds = loadExternalIds();
+        // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
+        List<List<PropStringObjT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
+        //List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
+
+        return stringPropertyList;
+    }
+
+    private List<List<PropStringObjT>> loadItems(Irdi irdi) {
+        List<String> listOfExternalIds = loadExternalIds(irdi);
         // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
         List<List<PropStringObjT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
         //List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
