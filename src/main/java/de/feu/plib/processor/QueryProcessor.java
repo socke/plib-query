@@ -49,7 +49,6 @@ public class QueryProcessor implements QueryPipe {
                 return catalogueType;
             }
             if (isItemOnlyQuery(query)) {
-                // TOOD implement path
                 CatalogueType catalogueType = simpleQueryService.loadDataWithItemsOnly();
                 return catalogueType;
             }

@@ -9,16 +9,13 @@ import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
 import de.feu.plib.xml.catalogue.PropertyValueType;
 import de.feu.plib.xml.value.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * SimpleQueryService handles simple queries.
@@ -107,6 +104,53 @@ public class SimpleQueryService extends AbstractQueryService {
         }
 
         return catalogueType;
+    }
+
+    @Override
+    public CatalogueType loadDataWithProjection() {
+        catalogueType = new CatalogueType();
+
+        if (objectsExistInDatabase()) {
+            LOGGER.trace("Objects exist in database");
+            List<List<PropStringObjT>> listOfItems = loadItems();
+            LOGGER.trace("Items loaded from db");
+
+            List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
+            LOGGER.trace("property ids grabbed from properties");
+
+            List<Map<String, Object>> propertyTypesAndValues = loadTypesAndUnitsFromPropertyIds(propertyIds);
+            LOGGER.trace("property types and values loaded from db");
+
+            // now we must put all that data together, items + irdi + properties of the items + their irdis + all
+            // properties and types. These must be mapped to the catalogue model
+            mapItemDataToCatalogue(listOfItems, propertyTypesAndValues);
+
+            filterCatalogueByPropertyIrdis();
+        }
+        return catalogueType;
+    }
+
+    /**
+     * This method does the projection by filtering the properties in the catalogue from the database by the
+     * given properties from the query.
+     * You can just call the method after you loaded all the data from the database into {@link #catalogueType},
+     * then all not defined properties will be deleted from the {@link #catalogueType}.
+     *
+     * Note: you can only remove items from Lists which you currently iterate when using {@link Iterator}
+     */
+    private void filterCatalogueByPropertyIrdis() {
+        List<String> filteredProperties = getEnrichedQuery().getQuery().getPropertyRef();
+
+        if (null != filteredProperties) {
+            List<ItemType> itemTypes = catalogueType.getItem();
+            for (Iterator<ItemType> item = itemTypes.iterator(); item.hasNext(); ) {
+                for (Iterator<PropertyValueType> prop = item.next().getPropertyValue().iterator(); prop.hasNext(); ) {
+                    if (!filteredProperties.contains(prop.next().getPropertyRef())) {
+                        prop.remove();
+                    }
+                }
+            }
+        }
     }
 
 
@@ -249,11 +293,6 @@ public class SimpleQueryService extends AbstractQueryService {
             }
         }
         return true;
-    }
-
-    @Override
-    public CatalogueType loadDataWithProjection() {
-        return null;
     }
 
     /**
