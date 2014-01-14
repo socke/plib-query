@@ -42,7 +42,7 @@ public class ParametricQueryService extends AbstractQueryService {
             List<List<PropStringObjT>> listOfItems = loadItems();
             LOGGER.trace("Items loaded from db");
 
-            List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
+            //List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
             LOGGER.trace("property ids grabbed from properties");
 
            // List<Map<String, Object>> propertyTypesAndValues = loadTypesAndUnitsFromPropertyIds(propertyIds);
