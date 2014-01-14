@@ -82,7 +82,7 @@ public class QueryRESTService {
     @Consumes("application/xml")
     @Produces(MediaType.APPLICATION_XML)
     public String query(String queryXML) {
-        CatalogueType catalogue = new CatalogueType();
+        CatalogueType catalogue;
         QueryType queryType = new QueryType();
         String marshalledCatalogue = "";
 
@@ -91,12 +91,11 @@ public class QueryRESTService {
             queryType = unmarshall(queryXML);
         } catch (RuntimeException e) {
             catalogue = handleUnMarshallingError(e);
-        } finally {
             try {
                 marshalledCatalogue = marshall(catalogue);
                 return marshalledCatalogue;
-            } catch (RuntimeException e) {
-                handleMarshallingError(e);
+            } catch (RuntimeException ex) {
+                handleMarshallingError(ex);
             }
         }
         LOGGER.info("QueryType: " + queryType);
