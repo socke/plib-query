@@ -8,31 +8,34 @@
 
 <h:head>
     <title>Query Test Page</title>
+    <h:outputStylesheet library="css" name="style.css"  />
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=xml" type="text/javascript"></script>
 </h:head>
 
 <h:body>
     <h:form id="queryform" enctype="multipart/form-data">
         <h1>Query Test Page</h1>
         <h:messages/>
-        <h:panelGroup id="query_submit_desc">Query submitted:</h:panelGroup>
-        <h:panelGroup layout="block" id="querysend"> #{queryBean.query}  </h:panelGroup>
-        <h:panelGroup layout="block" id="description">
-            Add here query XML Text which you would like to send to the server.
-        </h:panelGroup>
-        Response:
-        <h:panelGroup layout="block" id="response">
-          #{queryBean.response}
-        </h:panelGroup>
-        <h:panelGroup layout="block" id="query">
-            <h:inputTextarea value="#{queryBean.query}"></h:inputTextarea>
-        </h:panelGroup>
-        <h:panelGroup layout="block" id="upload">
-            <t:inputFileUpload value="#{queryBean.uploadedFile}" />
 
+        <h:panelGroup layout="block" styleClass="description">Please provide an ISO-29002-31 XML Query file:</h:panelGroup>
+
+        <h:panelGroup layout="block" id="upload" styleClass="upload">
+            <t:inputFileUpload value="#{queryBean.uploadedFile}" />
         </h:panelGroup>
-        <h:panelGroup layout="block" id="buttons">
+        <h:panelGroup layout="block" id="buttons" styleClass="buttons">
             <h:commandButton value="Send Query" type="submit" action="#{queryBean.sendQuery}"></h:commandButton>
         </h:panelGroup>
+
+        <h:panelGroup layout="block" styleClass="description">Query submitted:</h:panelGroup>
+        <h:panelGroup layout="block" id="querysend"><pre class="prettyprint">#{queryBean.query}</pre></h:panelGroup>
+
+        <h:panelGroup layout="block" styleClass="description">Response:</h:panelGroup>
+
+        <h:panelGroup layout="block" id="response">
+          <pre class="prettyprint">#{queryBean.response}</pre>
+        </h:panelGroup>
+
+
     </h:form>
 </h:body>
 
