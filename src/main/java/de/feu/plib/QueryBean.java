@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * TODO document class QueryBean
+ * Query Bean which is the model and controller of query page.
  */
 @ManagedBean
 @SessionScoped
@@ -33,8 +33,6 @@ public class QueryBean implements Serializable {
     private String response;
 
     private UploadedFile uploadedFile;
-
-    private ApplicationContext context;
 
     public UploadedFile getUploadedFile() {
         return uploadedFile;
@@ -77,16 +75,6 @@ public class QueryBean implements Serializable {
                 new FacesMessage(String.format("File '%s' of type '%s' successfully uploaded!", fileName, contentType)));
 
         LOGGER.info("sendQuery called, query is: " + query);
-    }
-
-    private ClassPathXmlApplicationContext initializeContext() {
-        return new ClassPathXmlApplicationContext(
-                "beans.xml");
-    }
-
-    private QueryPipe getQueryPipe() {
-        QueryPipe queryPipe = (QueryPipe) context.getBean("queryPipe");
-        return queryPipe;
     }
 
 }
