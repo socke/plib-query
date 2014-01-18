@@ -37,13 +37,13 @@ public class QueryProcessorIT extends AbstractXMLTest {
 
     @Test
     public void shouldBeSimpleQueryWithOnlyIrdi() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi.xml"), QueryType.class);
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_irdi.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
     }
 
     @Test
     public void shouldBeSimpleQueryWithTwoProperties() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi.xml"), QueryType.class);
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_irdi.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
         CatalogueType catalogueType = queryProcessor.filter(queryType);
         assertEquals(2, catalogueType.getItem().size());
@@ -52,32 +52,32 @@ public class QueryProcessorIT extends AbstractXMLTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionWithIllegalIrdi() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi_illegal.xml"), QueryType.class);
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_illegal_irdi.xml"), QueryType.class);
         queryProcessor.isSimpleQuery(queryType);
     }
 
     @Test
     public void shouldBeSimpleQueryWithIrdiAndOneProperty() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi_one_property.xml"), QueryType.class);
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_projection_one_property.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
     }
 
     @Test
     public void shouldBeSimpleQueryWithIrdiAndMultipleProperties() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi_multiple_properties.xml"), QueryType.class);
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_projection_multiple_properties.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
         assertEquals(4, queryType.getPropertyRef().size());
     }
 
     @Test
     public void shouldBeSimpleQueryWithGivenItem() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi_item.xml"), QueryType.class);
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_validation.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
     }
 
     @Test
     public void shouldBeParametricQueryWithRangeExpression() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_parametric_range.xml"), QueryType.class);
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/parametric_query_validation.xml"), QueryType.class);
         assertTrue(queryProcessor.isParametricQuery(queryType));
         assertFalse(queryProcessor.isSimpleQuery(queryType));
     }

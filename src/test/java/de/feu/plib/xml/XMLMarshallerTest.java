@@ -43,7 +43,7 @@ public class XMLMarshallerTest extends AbstractXMLTest {
      */
     @Test
     public void testUnMarshallingWithValidArbitraryClassIrdi() {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi.xml"),
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_irdi.xml"),
                 QueryType.class);
         assertEquals("0173-1#01-BAD803#2", queryType.getClassRef());
     }
@@ -55,7 +55,7 @@ public class XMLMarshallerTest extends AbstractXMLTest {
      */
     @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionDuringXMLValidationWithIllegalIrdi() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/query_class_irdi_illegal.xml"),
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_illegal_irdi.xml"),
                 QueryType.class);
     }
 
