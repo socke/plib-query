@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 /**
- * TODO document class Customer
+ * Class is for testpurposes only. Could probably be deleted.
  */
 @XmlRootElement
 public class Customer implements Serializable {

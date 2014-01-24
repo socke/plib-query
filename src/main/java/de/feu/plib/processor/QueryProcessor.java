@@ -48,7 +48,7 @@ public class QueryProcessor implements QueryPipe {
 
         if (isSimpleQuery(query)) {
 
-            enrichQuery(query, simpleQueryFilter);
+            enrichSimpleQuery(query, simpleQueryFilter);
 
             if (isIRDIOnlyQuery(query)) {
                 return simpleQueryService.loadDataWithIRDIOnly();
@@ -65,7 +65,7 @@ public class QueryProcessor implements QueryPipe {
         }
         if (isParametricQuery(query)) {
 
-            enrichQuery(query, parametricQueryFilter);
+            enrichtParametricQuery(query, parametricQueryFilter);
 
             if (isIRDIOnlyQuery(query)) {
                 return parametricQueryService.loadDataWithIRDIOnly();
@@ -85,9 +85,14 @@ public class QueryProcessor implements QueryPipe {
         return catalogueType;
     }
 
-    private void enrichQuery(QueryType query, QueryFilter queryFilter) {
+    private void enrichSimpleQuery(QueryType query, QueryFilter queryFilter) {
         EnrichedQuery enrichedQuery = queryFilter.filter(query);
         simpleQueryService.setEnrichedQuery(enrichedQuery);
+    }
+
+    private void enrichtParametricQuery(QueryType query, QueryFilter queryFilter) {
+        EnrichedQuery enrichedQuery = queryFilter.filter(query);
+        parametricQueryService.setEnrichedQuery(enrichedQuery);
     }
 
     private CatalogueType emptyCatalogue() {

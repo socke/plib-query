@@ -5,15 +5,21 @@ import de.feu.plib.dao.procedures.types.PropStringObjT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.xml.catalogue.CatalogueType;
+import de.feu.plib.xml.catalogue.ItemType;
+import de.feu.plib.xml.catalogue.PropertyValueType;
+import de.feu.plib.xml.query.CharacteristicDataQueryExpressionType;
+import de.feu.plib.xml.query.PropertyReferenceType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
- * TODO document class ParametricQueryService
+ * ParametricQueryService handles parametric (search) queries.
+ * Loads the data from the database and maps the data to the catalogue structure for returning to the client.
  */
 public class ParametricQueryService extends AbstractQueryService {
 
@@ -42,20 +48,137 @@ public class ParametricQueryService extends AbstractQueryService {
             List<List<PropStringObjT>> listOfItems = loadItems();
             LOGGER.trace("Items loaded from db");
 
-            //List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
+            List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
             LOGGER.trace("property ids grabbed from properties");
 
-           // List<Map<String, Object>> propertyTypesAndValues = loadTypesAndUnitsFromPropertyIds(propertyIds);
+            List<Map<String, Object>> propertyTypesAndValues = loadTypesAndUnitsFromPropertyIds(propertyIds, plibDao);
             LOGGER.trace("property types and values loaded from db");
 
             // now we must put all that data together, items + irdi + properties of the items + their irdis + all
             // properties and types. These must be mapped to the catalogue model
-            //mapItemDataToCatalogue(listOfItems, propertyTypesAndValues);
+            mapItemDataToCatalogue(listOfItems, propertyTypesAndValues);
 
-            //filterCatalogueByPropertyIrdis();
+            List<CharacteristicDataQueryExpressionType> queryExpression = getEnrichedQuery().getQuery().getCharacteristicDataQueryExpression();
+            for (CharacteristicDataQueryExpressionType qe : queryExpression) {
+                if (qe.getRange() != null) {
+                    PropertyReferenceType propertyReference = qe.getRange().getPropertyReference();
+                    filterCatalogueByRange(qe.getRange().getMinValue(), qe.getRange().getMaxValue(), propertyReference);
+                }
+                if (qe.getAnd() != null) {
+
+                }
+                if (qe.getCardinality() != null) {
+
+                }
+                if (qe.getDataEnvironment() != null) {
+
+                }
+                if (qe.getNot() != null) {
+
+                }
+                if (qe.getOr() != null) {
+
+                }
+                if (qe.getStringPattern() != null) {
+
+                }
+                if (qe.getStringSize() != null) {
+
+                }
+                if (qe.getSubset() != null) {
+
+                }
+            }
         }
+        return catalogueType;
+    }
 
-        return null;
+
+    /**
+     * Filters the catalogue by a given range.
+     * Will remove the item from the catalogue if it is not in range of max and min.
+     * Every double and float types in the catalogue have to be checked.
+     * Currently we check real, measuresinglenumbervalue and integer value
+     * TODO: probably complex value, currency value, and subitem types have to be considered.
+     *
+     * @param min minimum value of the range
+     * @param max maximum value of the range
+     */
+    private void filterCatalogueByRange(Float min, Float max, PropertyReferenceType propertyReference) {
+
+        List<ItemType> itemTypes = catalogueType.getItem();
+        for (Iterator<ItemType> itemIterator = itemTypes.iterator(); itemIterator.hasNext(); ) {
+            boolean propertyFound = false;
+            boolean inRange = false;
+
+            for (Iterator<PropertyValueType> propertyIterator = itemIterator.next().getPropertyValue().iterator(); propertyIterator.hasNext(); ) {
+                // check if property matches
+                PropertyValueType valueType = propertyIterator.next();
+                if (valueType.getPropertyRef().equals(propertyReference.getPropertyRef())) {
+                    propertyFound = true;
+                    inRange = isMeasureSingleNumberValueInRange(min, max, valueType, propertyReference);
+                }
+
+                //checkRealValue(min, max, propertyIterator, propertyReference);
+                //checkIntegerValue(min, max, propertyIterator, propertyReference);
+            }
+            if (!propertyFound || !inRange) {
+                itemIterator.remove();
+            }
+        }
+    }
+
+    private void checkIntegerValue(Float min, Float max, Iterator<PropertyValueType> propertyIterator, PropertyReferenceType propertyReference) {
+        PropertyValueType valueType = propertyIterator.next();
+        if (valueType.getIntegerValue() != null) {
+            double realValue = (double) valueType.getIntegerValue().getValue();
+            isInRange(min, max, propertyIterator, realValue, propertyReference.getPropertyRef(), valueType.getPropertyRef());
+        }
+    }
+
+    private boolean isMeasureSingleNumberValueInRange(Float min, Float max, PropertyValueType valueType, PropertyReferenceType propertyReference) {
+
+        if (valueType.getMeasureSingleNumberValue() != null && valueType.getMeasureSingleNumberValue().getRealValue() != null && propertyReference.getPropertyRef() != null) {
+            double realValue = valueType.getMeasureSingleNumberValue().getRealValue().getValue();
+
+            // real range check - value between given min max
+            if (min != null && max != null) {
+                if (Double.valueOf(min) <= realValue && Double.valueOf(max) >= realValue) {
+                    return true;
+                }
+            }
+
+            // check for value smaller than max
+            if (min == null && max != null) {
+                if (Double.valueOf(max) >= realValue) {
+                    return true;
+                }
+            }
+
+            // check for value bigger than min
+            if (min != null && max == null) {
+                if (Double.valueOf(min) <= realValue) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    private void checkRealValue(Float min, Float max, Iterator<PropertyValueType> prop, PropertyReferenceType propertyReference) {
+        PropertyValueType valueType = prop.next();
+        if (valueType.getRealValue() != null) {
+            double realValue = valueType.getRealValue().getValue();
+            isInRange(min, max, prop, realValue, propertyReference.getPropertyRef(), valueType.getPropertyRef());
+        }
+    }
+
+    private boolean isInRange(Float min, Float max, Iterator<PropertyValueType> propertyIterator, double realValue, String propertyRef, String valuePropertyRef) {
+        if ((propertyRef.equals(valuePropertyRef)) && !(Double.valueOf(min) <= realValue && Double.valueOf(max) >= realValue)) {
+            return true;
+        }
+        return false;
     }
 
     public CatalogueType loadDataWithProjection() {
@@ -63,7 +186,7 @@ public class ParametricQueryService extends AbstractQueryService {
     }
 
     /**
-     * Purpose: Method load all konkrete Item instances.
+     * Purpose: Method load all concrete Item instances.
      * <p/>
      * First loads all external ids by given query, then loads all items of this ids.
      * <p/>

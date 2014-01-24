@@ -77,7 +77,7 @@ public class QueryProcessorIT extends AbstractXMLTest {
 
     @Test
     public void shouldBeParametricQueryWithRangeExpression() throws Exception {
-        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/parametric_query_validation.xml"), QueryType.class);
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/parametric_query_range.xml"), QueryType.class);
         assertTrue(queryProcessor.isParametricQuery(queryType));
         assertFalse(queryProcessor.isSimpleQuery(queryType));
     }

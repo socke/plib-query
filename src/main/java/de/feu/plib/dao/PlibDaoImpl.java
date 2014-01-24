@@ -9,6 +9,7 @@ import de.feu.plib.xml.catalogue.PropertyValueType;
 import de.feu.plib.xml.value.StringValueType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,9 +32,11 @@ public class PlibDaoImpl implements PlibDao {
     static final Logger LOGGER = Logger.getLogger(PlibDaoImpl.class);
 
     @Autowired
+    @Qualifier(value = "jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
+    @Qualifier(value = "dataSource")
     javax.sql.DataSource ds;
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -59,6 +62,7 @@ public class PlibDaoImpl implements PlibDao {
 
     /**
      * Get the external ids from the property with given irdi
+     *
      * @param irdi the irdi of the property
      * @return a list of external ids
      */
@@ -112,6 +116,7 @@ public class PlibDaoImpl implements PlibDao {
      * We cannot map the plain lists to value objects. This would be double work as we currently do not
      * exactly know which type it is. We only load it from the predefined DO_STRING table, but we do not know if
      * it really is a string!
+     *
      * @param externalIds list of external ids
      * @return list of items which hold a list of property value pair
      */
@@ -131,7 +136,6 @@ public class PlibDaoImpl implements PlibDao {
     }
 
     /**
-     *
      * @param externalIds list of external ids
      * @return List of PropStringObjT elements holding the
      */
@@ -150,6 +154,7 @@ public class PlibDaoImpl implements PlibDao {
 
     /**
      * TODO implement method loadNumberPropertiesByExternalIds
+     *
      * @param externalIds list of external ids
      * @return list of items which hold a list of property value pair
      */
