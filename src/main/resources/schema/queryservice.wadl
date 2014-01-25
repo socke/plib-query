@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<application xmlns="http://research.sun.com/wadl/2006/10">
+    <doc xmlns:jersey="http://jersey.java.net/" jersey:generatedBy="Jersey: 1.8 06/24/2011 12:17 PM"/>
+    <resources base="http://localhost:8080/plib-characteristic-query/rest/">
+        <resource path="/ws">
+            <resource path="/query">
+                <method id="query" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+    </resources>
+</application>

@@ -58,39 +58,82 @@ public class ParametricQueryService extends AbstractQueryService {
             // properties and types. These must be mapped to the catalogue model
             mapItemDataToCatalogue(listOfItems, propertyTypesAndValues);
 
-            List<CharacteristicDataQueryExpressionType> queryExpression = getEnrichedQuery().getQuery().getCharacteristicDataQueryExpression();
-            for (CharacteristicDataQueryExpressionType qe : queryExpression) {
-                if (qe.getRange() != null) {
-                    PropertyReferenceType propertyReference = qe.getRange().getPropertyReference();
-                    filterCatalogueByRange(qe.getRange().getMinValue(), qe.getRange().getMaxValue(), propertyReference);
-                }
-                if (qe.getAnd() != null) {
-
-                }
-                if (qe.getCardinality() != null) {
-
-                }
-                if (qe.getDataEnvironment() != null) {
-
-                }
-                if (qe.getNot() != null) {
-
-                }
-                if (qe.getOr() != null) {
-
-                }
-                if (qe.getStringPattern() != null) {
-
-                }
-                if (qe.getStringSize() != null) {
-
-                }
-                if (qe.getSubset() != null) {
-
-                }
-            }
+            filterResultByQueryExpression();
         }
         return catalogueType;
+    }
+
+    private void filterResultByQueryExpression() {
+        List<CharacteristicDataQueryExpressionType> queryExpression = getEnrichedQuery().getQuery().getCharacteristicDataQueryExpression();
+        for (CharacteristicDataQueryExpressionType qe : queryExpression) {
+            checkAndFilterRange(qe);
+            checkAndFilterAnd(qe);
+            checkAndFilterCardinality(qe);
+            checkAndFilterDataEnvironment(qe);
+            checkAndFilterNot(qe);
+            checkAndFilterOr(qe);
+            checkAndFilterStringPattern(qe);
+            checkAndFilterStringSize(qe);
+            checkAndFilterSubset(qe);
+        }
+    }
+
+    private void checkAndFilterSubset(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getSubset() != null) {
+
+        }
+    }
+
+    private void checkAndFilterStringSize(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getStringSize() != null) {
+
+        }
+    }
+
+    private void checkAndFilterStringPattern(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getStringPattern() != null) {
+
+        }
+    }
+
+    private void checkAndFilterOr(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getOr() != null) {
+
+        }
+    }
+
+    private void checkAndFilterNot(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getNot() != null) {
+
+        }
+    }
+
+    private void checkAndFilterDataEnvironment(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getDataEnvironment() != null) {
+
+        }
+    }
+
+    private void checkAndFilterCardinality(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getCardinality() != null) {
+
+        }
+    }
+
+    private void checkAndFilterRange(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getRange() != null) {
+            PropertyReferenceType propertyReference = qe.getRange().getPropertyReference();
+            filterCatalogueByRange(qe.getRange().getMinValue(), qe.getRange().getMaxValue(), propertyReference, qe.getRange().isIsInclusive());
+        }
+    }
+
+    private void checkAndFilterAnd(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getAnd() != null) {
+            List<CharacteristicDataQueryExpressionType> operands = qe.getAnd().getOperand();
+            for (CharacteristicDataQueryExpressionType queryExpressionType : operands) {
+            }
+
+        }
     }
 
 
@@ -104,7 +147,7 @@ public class ParametricQueryService extends AbstractQueryService {
      * @param min minimum value of the range
      * @param max maximum value of the range
      */
-    private void filterCatalogueByRange(Float min, Float max, PropertyReferenceType propertyReference) {
+    private void filterCatalogueByRange(Float min, Float max, PropertyReferenceType propertyReference, boolean isInclusive) {
 
         List<ItemType> itemTypes = catalogueType.getItem();
         for (Iterator<ItemType> itemIterator = itemTypes.iterator(); itemIterator.hasNext(); ) {
@@ -116,7 +159,7 @@ public class ParametricQueryService extends AbstractQueryService {
                 PropertyValueType valueType = propertyIterator.next();
                 if (valueType.getPropertyRef().equals(propertyReference.getPropertyRef())) {
                     propertyFound = true;
-                    inRange = isMeasureSingleNumberValueInRange(min, max, valueType, propertyReference);
+                    inRange = isMeasureSingleNumberValueInRange(min, max, valueType, propertyReference, isInclusive);
                 }
 
                 //checkRealValue(min, max, propertyIterator, propertyReference);
@@ -136,29 +179,53 @@ public class ParametricQueryService extends AbstractQueryService {
         }
     }
 
-    private boolean isMeasureSingleNumberValueInRange(Float min, Float max, PropertyValueType valueType, PropertyReferenceType propertyReference) {
+    private boolean isMeasureSingleNumberValueInRange(Float min, Float max, PropertyValueType valueType, PropertyReferenceType propertyReference, boolean isInclusive) {
 
         if (valueType.getMeasureSingleNumberValue() != null && valueType.getMeasureSingleNumberValue().getRealValue() != null && propertyReference.getPropertyRef() != null) {
             double realValue = valueType.getMeasureSingleNumberValue().getRealValue().getValue();
 
-            // real range check - value between given min max
-            if (min != null && max != null) {
-                if (Double.valueOf(min) <= realValue && Double.valueOf(max) >= realValue) {
-                    return true;
+            // if inclusive then the bounds are included in the value search
+            if (isInclusive) {
+                // real range check - value between given min max
+                if (min != null && max != null) {
+                    if (Double.valueOf(min) <= realValue && Double.valueOf(max) >= realValue) {
+                        return true;
+                    }
                 }
-            }
 
-            // check for value smaller than max
-            if (min == null && max != null) {
-                if (Double.valueOf(max) >= realValue) {
-                    return true;
+                // check for value smaller than max
+                if (min == null && max != null) {
+                    if (Double.valueOf(max) >= realValue) {
+                        return true;
+                    }
                 }
-            }
 
-            // check for value bigger than min
-            if (min != null && max == null) {
-                if (Double.valueOf(min) <= realValue) {
-                    return true;
+                // check for value bigger than min
+                if (min != null && max == null) {
+                    if (Double.valueOf(min) <= realValue) {
+                        return true;
+                    }
+                }
+            } else {
+                // real range check - value between given min max
+                if (min != null && max != null) {
+                    if (Double.valueOf(min) < realValue && Double.valueOf(max) > realValue) {
+                        return true;
+                    }
+                }
+
+                // check for value smaller than max
+                if (min == null && max != null) {
+                    if (Double.valueOf(max) > realValue) {
+                        return true;
+                    }
+                }
+
+                // check for value bigger than min
+                if (min != null && max == null) {
+                    if (Double.valueOf(min) < realValue) {
+                        return true;
+                    }
                 }
             }
         }
