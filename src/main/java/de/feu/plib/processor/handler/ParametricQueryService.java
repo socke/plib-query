@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -63,77 +64,100 @@ public class ParametricQueryService extends AbstractQueryService {
         return catalogueType;
     }
 
+    public CatalogueType loadDataWithProjection() {
+        return loadDataWithIRDIOnly();
+    }
+
     private void filterResultByQueryExpression() {
         List<CharacteristicDataQueryExpressionType> queryExpression = getEnrichedQuery().getQuery().getCharacteristicDataQueryExpression();
         for (CharacteristicDataQueryExpressionType qe : queryExpression) {
-            checkAndFilterRange(qe);
-            checkAndFilterAnd(qe);
-            checkAndFilterCardinality(qe);
-            checkAndFilterDataEnvironment(qe);
-            checkAndFilterNot(qe);
-            checkAndFilterOr(qe);
-            checkAndFilterStringPattern(qe);
-            checkAndFilterStringSize(qe);
-            checkAndFilterSubset(qe);
+            filterRange(qe);
+            filterAnd(qe);
+            filterCardinality(qe);
+            filterDataEnvironment(qe);
+            filterNot(qe);
+            filterOr(qe);
+            filterStringPattern(qe);
+            filterStringSize(qe);
+            filterSubset(qe);
         }
     }
 
-    private void checkAndFilterSubset(CharacteristicDataQueryExpressionType qe) {
+    private void filterSubset(CharacteristicDataQueryExpressionType qe) {
         if (qe.getSubset() != null) {
 
         }
     }
 
-    private void checkAndFilterStringSize(CharacteristicDataQueryExpressionType qe) {
+    private void filterStringSize(CharacteristicDataQueryExpressionType qe) {
         if (qe.getStringSize() != null) {
 
         }
     }
 
-    private void checkAndFilterStringPattern(CharacteristicDataQueryExpressionType qe) {
+    private void filterStringPattern(CharacteristicDataQueryExpressionType qe) {
         if (qe.getStringPattern() != null) {
 
         }
     }
 
-    private void checkAndFilterOr(CharacteristicDataQueryExpressionType qe) {
+    private void filterOr(CharacteristicDataQueryExpressionType qe) {
         if (qe.getOr() != null) {
 
         }
     }
 
-    private void checkAndFilterNot(CharacteristicDataQueryExpressionType qe) {
+    private void filterNot(CharacteristicDataQueryExpressionType qe) {
         if (qe.getNot() != null) {
 
         }
     }
 
-    private void checkAndFilterDataEnvironment(CharacteristicDataQueryExpressionType qe) {
+    private void filterDataEnvironment(CharacteristicDataQueryExpressionType qe) {
         if (qe.getDataEnvironment() != null) {
 
         }
     }
 
-    private void checkAndFilterCardinality(CharacteristicDataQueryExpressionType qe) {
+    private void filterCardinality(CharacteristicDataQueryExpressionType qe) {
         if (qe.getCardinality() != null) {
 
         }
     }
 
-    private void checkAndFilterRange(CharacteristicDataQueryExpressionType qe) {
+    private void filterRange(CharacteristicDataQueryExpressionType qe) {
         if (qe.getRange() != null) {
             PropertyReferenceType propertyReference = qe.getRange().getPropertyReference();
             filterCatalogueByRange(qe.getRange().getMinValue(), qe.getRange().getMaxValue(), propertyReference, qe.getRange().isIsInclusive());
         }
     }
 
-    private void checkAndFilterAnd(CharacteristicDataQueryExpressionType qe) {
+    private void filterAnd(CharacteristicDataQueryExpressionType qe) {
         if (qe.getAnd() != null) {
+            boolean allOperandsEvaluatedToTrue = true;
             List<CharacteristicDataQueryExpressionType> operands = qe.getAnd().getOperand();
             for (CharacteristicDataQueryExpressionType queryExpressionType : operands) {
+                filterRange(queryExpressionType);
+                //allOperandsEvaluatedToTrue = operandIsInRange(queryExpressionType);
+                filterAnd(queryExpressionType);
+            }
+            if (allOperandsEvaluatedToTrue) {
+                return;
             }
 
         }
+    }
+
+    private boolean operandIsInRange(CharacteristicDataQueryExpressionType qe) {
+        if (qe.getRange() != null) {
+            PropertyReferenceType propertyReference = qe.getRange().getPropertyReference();
+            return isInRangeOfCatalogue(qe.getRange().getMinValue(), qe.getRange().getMaxValue(), propertyReference, qe.getRange().isIsInclusive());
+        }
+        return false;
+    }
+
+    private boolean isInRangeOfCatalogue(Float minValue, Float maxValue, PropertyReferenceType propertyReference, boolean isInclusive) {
+        return false;
     }
 
 
@@ -148,25 +172,27 @@ public class ParametricQueryService extends AbstractQueryService {
      * @param max maximum value of the range
      */
     private void filterCatalogueByRange(Float min, Float max, PropertyReferenceType propertyReference, boolean isInclusive) {
+        List<ItemType> itemsToDelete = new ArrayList<ItemType>();
 
         List<ItemType> itemTypes = catalogueType.getItem();
         for (Iterator<ItemType> itemIterator = itemTypes.iterator(); itemIterator.hasNext(); ) {
             boolean propertyFound = false;
             boolean inRange = false;
 
-            for (Iterator<PropertyValueType> propertyIterator = itemIterator.next().getPropertyValue().iterator(); propertyIterator.hasNext(); ) {
+            ItemType currentItem = itemIterator.next();
+            for (Iterator<PropertyValueType> propertyIterator = currentItem.getPropertyValue().iterator(); propertyIterator.hasNext(); ) {
                 // check if property matches
                 PropertyValueType valueType = propertyIterator.next();
                 if (valueType.getPropertyRef().equals(propertyReference.getPropertyRef())) {
                     propertyFound = true;
                     inRange = isMeasureSingleNumberValueInRange(min, max, valueType, propertyReference, isInclusive);
+                    //checkRealValue(min, max, propertyIterator, propertyReference);
+                    //checkIntegerValue(min, max, propertyIterator, propertyReference);
                 }
-
-                //checkRealValue(min, max, propertyIterator, propertyReference);
-                //checkIntegerValue(min, max, propertyIterator, propertyReference);
             }
             if (!propertyFound || !inRange) {
                 itemIterator.remove();
+                itemsToDelete.add(currentItem);
             }
         }
     }
@@ -246,10 +272,6 @@ public class ParametricQueryService extends AbstractQueryService {
             return true;
         }
         return false;
-    }
-
-    public CatalogueType loadDataWithProjection() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 
     /**
