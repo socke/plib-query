@@ -1,7 +1,7 @@
 package de.feu.plib.processor.handler;
 
 import de.feu.plib.dao.PlibDao;
-import de.feu.plib.dao.procedures.types.PropStringObjT;
+import de.feu.plib.dao.procedures.types.PropertyObjectT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.xml.catalogue.CatalogueType;
@@ -46,7 +46,7 @@ public class ParametricQueryService extends AbstractQueryService {
 
         if (objectsExistInDatabase()) {
             LOGGER.trace("Objects exist in database");
-            List<List<PropStringObjT>> listOfItems = loadItems();
+            List<List<PropertyObjectT>> listOfItems = loadItems();
             LOGGER.trace("Items loaded from db");
 
             List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
@@ -69,7 +69,7 @@ public class ParametricQueryService extends AbstractQueryService {
 
         if (objectsExistInDatabase()) {
             LOGGER.trace("Objects exist in database");
-            List<List<PropStringObjT>> listOfItems = loadItems();
+            List<List<PropertyObjectT>> listOfItems = loadItems();
             LOGGER.trace("Items loaded from db");
 
             List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
@@ -326,20 +326,11 @@ public class ParametricQueryService extends AbstractQueryService {
      *
      * @return a list of all items
      */
-    private List<List<PropStringObjT>> loadItems() {
+    private List<List<PropertyObjectT>> loadItems() {
         List<String> listOfExternalIds = loadExternalIds();
         // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
-        List<List<PropStringObjT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
-        //List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
-
-        return stringPropertyList;
-    }
-
-    private List<List<PropStringObjT>> loadItems(Irdi irdi) {
-        List<String> listOfExternalIds = loadExternalIds(irdi);
-        // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
-        List<List<PropStringObjT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
-        //List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
+        List<List<PropertyObjectT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
+        //List<List<PropertyObjectT>> numberPropertyList = plibDao.loadNumberPropertiesBy(listOfExternalIds);
 
         return stringPropertyList;
     }

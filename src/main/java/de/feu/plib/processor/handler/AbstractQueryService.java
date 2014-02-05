@@ -1,7 +1,7 @@
 package de.feu.plib.processor.handler;
 
 import de.feu.plib.dao.PlibDao;
-import de.feu.plib.dao.procedures.types.PropStringObjT;
+import de.feu.plib.dao.procedures.types.PropertyObjectT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.xml.catalogue.CatalogueType;
 import de.feu.plib.xml.catalogue.ItemType;
@@ -36,7 +36,7 @@ public abstract class AbstractQueryService {
         this.enrichedQuery = enrichedQuery;
     }
 
-    protected boolean allPropertiesExistWithValuesIn(List<List<PropStringObjT>> listOfItems) {
+    protected boolean allPropertiesExistWithValuesIn(List<List<PropertyObjectT>> listOfItems) {
         List<PropertyValueType> allPropertyValues = getEnrichedQuery().getQuery().getItem().getPropertyValue();
 
         // TODO currently we only check the string and real properties, need to do that for all other properties as well.
@@ -50,8 +50,8 @@ public abstract class AbstractQueryService {
                 Double queryItemvalue = propType.getMeasureSingleNumberValue().getRealValue().getValue();
                 // TODO implement for all other subtypes of MeasuredSingleNumberValue
 
-                for (List<PropStringObjT> propList : listOfItems) {
-                    for (PropStringObjT propStringObj : propList) {
+                for (List<PropertyObjectT> propList : listOfItems) {
+                    for (PropertyObjectT propStringObj : propList) {
                         String irdi = propStringObj.getIrdi();
                         Double value = Double.valueOf(propStringObj.getValue());
 
@@ -67,8 +67,8 @@ public abstract class AbstractQueryService {
 
                 String queryItemvalue = propType.getStringValue().getValue();
 
-                for (List<PropStringObjT> propList : listOfItems) {
-                    for (PropStringObjT propStringObj : propList) {
+                for (List<PropertyObjectT> propList : listOfItems) {
+                    for (PropertyObjectT propStringObj : propList) {
                         String irdi = propStringObj.getIrdi();
                         String value = propStringObj.getValue();
 
@@ -84,8 +84,8 @@ public abstract class AbstractQueryService {
 
                 Double queryItemvalue = propType.getRealValue().getValue();
 
-                for (List<PropStringObjT> propList : listOfItems) {
-                    for (PropStringObjT propStringObj : propList) {
+                for (List<PropertyObjectT> propList : listOfItems) {
+                    for (PropertyObjectT propStringObj : propList) {
                         String irdi = propStringObj.getIrdi();
                         Double value = Double.valueOf(propStringObj.getValue());
 
@@ -211,10 +211,10 @@ public abstract class AbstractQueryService {
      * @return a simple list with all property ids only.
      *         todo extract from PropStringObjT getId into interface PropObj or something
      */
-    protected List<String> getPropertyIdsFromProperties(List<List<PropStringObjT>> listOfItems) {
+    protected List<String> getPropertyIdsFromProperties(List<List<PropertyObjectT>> listOfItems) {
         List<String> propertyIds = new ArrayList<String>();
-        for (List<PropStringObjT> propList : listOfItems) {
-            for (PropStringObjT prop : propList) {
+        for (List<PropertyObjectT> propList : listOfItems) {
+            for (PropertyObjectT prop : propList) {
                 propertyIds.add(prop.getId().toString());
                 LOGGER.info("property id value: " + prop.getId());
             }
@@ -251,13 +251,13 @@ public abstract class AbstractQueryService {
      * @param propertyTypesAndValues
      * @param classIrdi
      */
-    protected void mapItemDataToCatalogue(List<List<PropStringObjT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues, String classIrdi) {
-        for (List<PropStringObjT> propList : listOfItems) {
+    protected void mapItemDataToCatalogue(List<List<PropertyObjectT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues, String classIrdi) {
+        for (List<PropertyObjectT> propList : listOfItems) {
             ItemType item = new ItemType();
             item.setClassRef(classIrdi);
             LOGGER.info("set class ref: " + classIrdi);
 
-            for (PropStringObjT propStringObj : propList) {
+            for (PropertyObjectT propStringObj : propList) {
                 String irdi = propStringObj.getIrdi();
                 String value = propStringObj.getValue();
                 BigDecimal id = BigDecimal.valueOf(propStringObj.getId());
@@ -366,7 +366,7 @@ public abstract class AbstractQueryService {
      * @param listOfItems
      * @param propertyTypesAndValues
      */
-    protected void mapItemDataToCatalogue(List<List<PropStringObjT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues) {
+    protected void mapItemDataToCatalogue(List<List<PropertyObjectT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues) {
         mapItemDataToCatalogue(listOfItems, propertyTypesAndValues, getEnrichedQuery().getIrdi());
     }
 

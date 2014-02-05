@@ -1,9 +1,7 @@
 package de.feu.plib.dao;
 
-import de.feu.plib.dao.procedures.types.PropStringObjT;
-import de.feu.plib.processor.analyser.EnrichedQuery;
+import de.feu.plib.dao.procedures.types.PropertyObjectT;
 import de.feu.plib.processor.analyser.Irdi;
-import de.feu.plib.xml.catalogue.CatalogueType;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -82,5 +80,17 @@ public interface PlibDao {
      * @param externalIds the external ids for which the string properties should be loaded
      * @return a list of propertyvaluetype
      */
-    List<List<PropStringObjT>> loadStringPropertiesBy(List<String> externalIds);
+    List<List<PropertyObjectT>> loadStringPropertiesBy(List<String> externalIds);
+
+    /**
+     * Loads the string properties by the given external ids in the number list.
+     * The external ids are needed as this is predefined by the procedures as IN parameter.
+     * They look like "EXT_4000001", for the testdata usually with prefix EXT_
+     * Makes usage of the procedure calls, so thats the reason for the PropNumberObjT type, which holds the
+     * item values as defined in the procedure.
+     *
+     * @param externalIds the external ids for which the string properties should be loaded
+     * @return a list of propertyvaluetype
+     */
+    List<List<PropertyObjectT>> loadNumberPropertiesBy(List<String> externalIds);
 }

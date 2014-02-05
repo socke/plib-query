@@ -65,7 +65,7 @@ public class QueryProcessor implements QueryPipe {
         }
         if (isParametricQuery(query)) {
 
-            enrichtParametricQuery(query, parametricQueryFilter);
+            enrichParametricQuery(query, parametricQueryFilter);
 
             if (isIRDIOnlyQuery(query)) {
                 return parametricQueryService.loadDataWithIRDIOnly();
@@ -90,7 +90,7 @@ public class QueryProcessor implements QueryPipe {
         simpleQueryService.setEnrichedQuery(enrichedQuery);
     }
 
-    private void enrichtParametricQuery(QueryType query, QueryFilter queryFilter) {
+    private void enrichParametricQuery(QueryType query, QueryFilter queryFilter) {
         EnrichedQuery enrichedQuery = queryFilter.filter(query);
         parametricQueryService.setEnrichedQuery(enrichedQuery);
     }

@@ -1,6 +1,6 @@
 package de.feu.plib.dao.procedures;
 
-import de.feu.plib.dao.procedures.types.PropStringObjT;
+import de.feu.plib.dao.procedures.types.PropNumberObjT;
 import de.feu.plib.dao.procedures.types.PropertyObjectT;
 import oracle.jdbc.OracleTypes;
 import oracle.sql.ARRAY;
@@ -17,18 +17,18 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * Class GetObjString represents the StoredProcedure GET_OBJ_STRING
+ * Class GetObjNumber represents the StoredProcedure GET_OBJ_NUMBER
  * of the Oracle package PACK_PROPERTY.
  * <p/>
  * INPUT Parameters: EXT_PROD_ID -> String
- * OUTPUT Parameters: PROP_STRING_OBJ_NTT which is a table ob PROP_STRING_OBJ_T
+ * OUTPUT Parameters: PROP_NUMBER_OBJ_NTT which is a table ob PROP_NUMBER_OBJ_T
  */
-public class GetObjString extends StoredProcedure {
+public class GetObjNumber extends StoredProcedure {
 
     /**
      * The oracle procedure name. Note the package definition (PACK_PROPERTY) which is needed!!!
      */
-    private static final String PROCEDURE_NAME = "PACK_PROPERTY.GET_OBJ_STRING";
+    private static final String PROCEDURE_NAME = "PACK_PROPERTY.GET_OBJ_NUMBER";
 
     /**
      * Expected length of columns. Must match the entries from oracle type definition.
@@ -45,11 +45,11 @@ public class GetObjString extends StoredProcedure {
      *
      * @param dataSource the data source must be passed
      */
-    public GetObjString(DataSource dataSource) {
+    public GetObjNumber(DataSource dataSource) {
         super(dataSource, PROCEDURE_NAME);
         declareParameter(new SqlParameter("EXT_PROD_ID", OracleTypes.VARCHAR));
 
-        declareParameter(new SqlOutParameter("OUTTBL_OBJ_STRING", OracleTypes.ARRAY, "PROP_STRING_OBJ_NTT", createReturnType()));
+        declareParameter(new SqlOutParameter("OUTTBL_OBJ_NUMBER", OracleTypes.ARRAY, "PROP_NUMBER_OBJ_NTT", createReturnType()));
 
         compile();
     }
@@ -67,7 +67,7 @@ public class GetObjString extends StoredProcedure {
 
                 Object[] rows = (Object[]) array.getArray();
 
-                ArrayList<PropStringObjT> entries = new ArrayList<PropStringObjT>();
+                ArrayList<PropNumberObjT> entries = new ArrayList<PropNumberObjT>();
 
                 for (Object row : rows) {
                     Object[] cols = ((oracle.sql.STRUCT) row).getAttributes();
@@ -79,7 +79,7 @@ public class GetObjString extends StoredProcedure {
                     if (cols.length == EXPECTED_COL_LENGTH) {
                         LOGGER.trace("Expected col length - OK - now mapping values to domain object");
 
-                        PropStringObjT propertyEntry = mapAttributes(cols);
+                        PropNumberObjT propertyEntry = mapAttributes(cols);
 
                         entries.add(propertyEntry);
                     } else {
@@ -90,8 +90,8 @@ public class GetObjString extends StoredProcedure {
                 return entries;
             }
 
-            private PropStringObjT mapAttributes(Object[] cols) {
-                PropStringObjT propertyEntry = new PropStringObjT();
+            private PropNumberObjT mapAttributes(Object[] cols) {
+                PropNumberObjT propertyEntry = new PropNumberObjT();
 
                 if (null != cols[0]) {
                     propertyEntry.setId(((BigDecimal) cols[0]).longValue());
@@ -100,7 +100,7 @@ public class GetObjString extends StoredProcedure {
                     propertyEntry.setIrdi(cols[1].toString());
                 }
                 if (null != cols[2]) {
-                    propertyEntry.setValue(cols[2].toString());
+                    propertyEntry.setValue((Long) cols[2]);
                 }
                 if (null != cols[3]) {
                     propertyEntry.setUnit(cols[3].toString());
@@ -127,7 +127,7 @@ public class GetObjString extends StoredProcedure {
             System.out.println(entry.getKey() + "/" + entry.getValue());
         }
         if (!out.isEmpty())
-            return (List<PropertyObjectT>) out.get("OUTTBL_OBJ_STRING");
+            return (List<PropertyObjectT>) out.get("OUTTBL_OBJ_NUMBER");
         else
             return Collections.emptyList();
     }

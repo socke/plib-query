@@ -1,7 +1,7 @@
 package de.feu.plib.dao.procedures;
 
 
-import de.feu.plib.dao.procedures.types.PropStringObjT;
+import de.feu.plib.dao.procedures.types.PropertyObjectT;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class GetObjStringIT {
     public void shouldReturnTwoEntriesWithCorrectIrdis() {
 
         GetObjString getObjString = new GetObjString(ds);
-        List<PropStringObjT> resultList = getObjString.execute("EXT_300000001");
+        List<PropertyObjectT> resultList = getObjString.execute("EXT_300000001");
 
         assertEquals(2, resultList.size());
         assertEquals("0173-1#02-AAA762#1", resultList.get(0).getIrdi());

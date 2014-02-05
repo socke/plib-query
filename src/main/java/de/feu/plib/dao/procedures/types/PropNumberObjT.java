@@ -3,40 +3,54 @@ package de.feu.plib.dao.procedures.types;
 /**
  * The model of the string results from the procedure.
  * Type definition in oracle:
- *
+ * <p/>
  * CREATE OR REPLACE
  * TYPE        "PROP_STRING_OBJ_T" AS OBJECT(
  * P_IRDI    VARCHAR2(4000),
- * "VALUE"   VARCHAR2(4000),
+ * "VALUE"   NUMBER,
  * unit      VARCHAR2(30),
  * prefix    VARCHAR2(30),
  * tolerance NUMBER,
  * VALUE_ID  NUMBER
  * );
- *
+ * <p/>
  * Note: the naming is not very well chosen, but we stick to the naming of the oracle types to make it recognizable.
  */
-public class PropStringObjT implements PropertyObjectT {
+public class PropNumberObjT implements PropertyObjectT {
 
-    /** the id of the property */
+    /**
+     * the id of the property
+     */
     private Long id;
 
-    /** PROP_IRDI VARCHAR2(4000) */
+    /**
+     * PROP_IRDI VARCHAR2(4000)
+     */
     private String irdi;
 
-    /** VAL VARCHAR2(4000) */
-    private String value;
+    /**
+     * VAL VARCHAR2(4000)
+     */
+    private Long value;
 
-    /** UNIT VARCHAR2(30) */
+    /**
+     * UNIT VARCHAR2(30)
+     */
     private String unit;
 
-    /** PREFIX VARCHAR2(30) */
+    /**
+     * PREFIX VARCHAR2(30)
+     */
     private String prefix;
 
-    /** TOLERANCE NUMBER */
+    /**
+     * TOLERANCE NUMBER
+     */
     private Long tolerance;
 
-    /** value_id  NUMBER */
+    /**
+     * value_id  NUMBER
+     */
     private Long valueId;
 
     @Override
@@ -59,10 +73,10 @@ public class PropStringObjT implements PropertyObjectT {
 
     @Override
     public String getValue() {
-        return value;
+        return value.toString();
     }
 
-    public void setValue(String value) {
+    public void setValue(Long value) {
         this.value = value;
     }
 
@@ -103,8 +117,9 @@ public class PropStringObjT implements PropertyObjectT {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PropStringObjT that = (PropStringObjT) o;
+        PropNumberObjT that = (PropNumberObjT) o;
 
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (irdi != null ? !irdi.equals(that.irdi) : that.irdi != null) return false;
         if (prefix != null ? !prefix.equals(that.prefix) : that.prefix != null) return false;
         if (tolerance != null ? !tolerance.equals(that.tolerance) : that.tolerance != null) return false;
@@ -115,9 +130,11 @@ public class PropStringObjT implements PropertyObjectT {
         return true;
     }
 
+
     @Override
     public int hashCode() {
-        int result = irdi != null ? irdi.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (irdi != null ? irdi.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
         result = 31 * result + (unit != null ? unit.hashCode() : 0);
         result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
@@ -126,15 +143,18 @@ public class PropStringObjT implements PropertyObjectT {
         return result;
     }
 
+
     @Override
     public String toString() {
-        return "PropStringObjT{" +
-                "irdi='" + irdi + '\'' +
-                ", value='" + value + '\'' +
+        return "PropNumberObjT{" +
+                "id=" + id +
+                ", irdi='" + irdi + '\'' +
+                ", value=" + value +
                 ", unit='" + unit + '\'' +
                 ", prefix='" + prefix + '\'' +
                 ", tolerance=" + tolerance +
                 ", valueId=" + valueId +
                 '}';
     }
+
 }

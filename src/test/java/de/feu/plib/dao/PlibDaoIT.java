@@ -1,14 +1,10 @@
 package de.feu.plib.dao;
 
-import de.feu.plib.dao.procedures.types.PropStringObjT;
+import de.feu.plib.dao.procedures.types.PropertyObjectT;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.processor.analyser.Irdi;
-import de.feu.plib.processor.analyser.QueryKind;
-import de.feu.plib.xml.catalogue.CatalogueType;
-import de.feu.plib.xml.catalogue.ItemType;
 import de.feu.plib.xml.query.QueryType;
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +88,8 @@ public class PlibDaoIT {
         assertNotNull(externalProductIds);
         assertEquals(2, externalProductIds.size());
         LOGGER.info("external product ids: " + externalProductIds.get(0));
-        assertEquals("EXT_300000001", externalProductIds.get(0));
+        assertEquals("EXT_300000011", externalProductIds.get(0));
+        assertEquals("EXT_300000001", externalProductIds.get(1));
     }
 
     /**
@@ -112,7 +109,7 @@ public class PlibDaoIT {
 
     @Test
     public void testLoadStringPropertiesBy() {
-        List<List<PropStringObjT>> propStringObjList = plib.loadStringPropertiesBy(createExternalIdsList());
+        List<List<PropertyObjectT>> propStringObjList = plib.loadStringPropertiesBy(createExternalIdsList());
         LOGGER.info("propStringObjList list: " + propStringObjList);
         assertEquals("should be one instance", 1, propStringObjList.size());
         assertEquals("should be two properties",2, propStringObjList.get(0).size());

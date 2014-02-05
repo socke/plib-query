@@ -66,7 +66,7 @@ public class QueryProcessorIT extends AbstractXMLTest {
     public void shouldBeSimpleQueryWithIrdiAndMultipleProperties() throws Exception {
         QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/simple_query_projection_multiple_properties.xml"), QueryType.class);
         assertTrue(queryProcessor.isSimpleQuery(queryType));
-        assertEquals(4, queryType.getPropertyRef().size());
+        assertEquals(2, queryType.getPropertyRef().size());
     }
 
     @Test
@@ -80,5 +80,17 @@ public class QueryProcessorIT extends AbstractXMLTest {
         QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/parametric_query_range.xml"), QueryType.class);
         assertTrue(queryProcessor.isParametricQuery(queryType));
         assertFalse(queryProcessor.isSimpleQuery(queryType));
+    }
+
+    @Test
+    public void shouldBeParametricQueryWithProjectionAndANDExpression() throws Exception {
+        QueryType queryType = marshaller.unmarshallXML(readXMLFrom("/de/feu/plib/xml/parametric_query_projection_range_and.xml"), QueryType.class);
+        assertTrue(queryProcessor.isParametricQuery(queryType));
+        assertFalse(queryProcessor.isSimpleQuery(queryType));
+        assertEquals(1, queryType.getPropertyRef().size()); // one property selected
+        assertTrue(queryType.getCharacteristicDataQueryExpression().get(0).getAnd() != null); // and expression is here
+        assertEquals(2, queryType.getCharacteristicDataQueryExpression().get(0).getAnd().getOperand().size()); // two operands
+        assertTrue(queryType.getCharacteristicDataQueryExpression().get(0).getAnd().getOperand().get(0).getRange() != null); // first operand is range
+        assertTrue(queryType.getCharacteristicDataQueryExpression().get(0).getAnd().getOperand().get(1).getRange() != null); // second operand is range
     }
 }

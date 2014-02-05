@@ -1,24 +1,17 @@
 package de.feu.plib.dao;
 
+import de.feu.plib.dao.procedures.GetObjNumber;
 import de.feu.plib.dao.procedures.GetObjString;
-import de.feu.plib.dao.procedures.types.PropStringObjT;
-import de.feu.plib.processor.analyser.EnrichedQuery;
+import de.feu.plib.dao.procedures.types.PropertyObjectT;
 import de.feu.plib.processor.analyser.Irdi;
-import de.feu.plib.xml.catalogue.CatalogueType;
-import de.feu.plib.xml.catalogue.PropertyValueType;
-import de.feu.plib.xml.value.StringValueType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.CallableStatementCallback;
-import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -140,13 +133,26 @@ public class PlibDaoImpl implements PlibDao {
      * @return List of PropStringObjT elements holding the
      */
     @Override
-    public List<List<PropStringObjT>> loadStringPropertiesBy(List<String> externalIds) {
-        List<List<PropStringObjT>> itemValueList = new ArrayList<List<PropStringObjT>>();
+    public List<List<PropertyObjectT>> loadStringPropertiesBy(List<String> externalIds) {
+        List<List<PropertyObjectT>> itemValueList = new ArrayList<List<PropertyObjectT>>();
 
         GetObjString getObjString = new GetObjString(ds);
         for (String extId : externalIds) {
-            List<PropStringObjT> resultList = getObjString.execute(extId);
+            List<PropertyObjectT> resultList = getObjString.execute(extId);
             LOGGER.info("PropStringObjT list of external id: " + extId + " is " + resultList.toString());
+            itemValueList.add(resultList);
+        }
+        return itemValueList;
+    }
+
+    @Override
+    public List<List<PropertyObjectT>> loadNumberPropertiesBy(List<String> externalIds) {
+        List<List<PropertyObjectT>> itemValueList = new ArrayList<List<PropertyObjectT>>();
+
+        GetObjNumber getObjNumber = new GetObjNumber(ds);
+        for (String extId : externalIds) {
+            List<PropertyObjectT> resultList = getObjNumber.execute(extId);
+            LOGGER.info("PropNumberObjT list of external id: " + extId + " is " + resultList.toString());
             itemValueList.add(resultList);
         }
         return itemValueList;

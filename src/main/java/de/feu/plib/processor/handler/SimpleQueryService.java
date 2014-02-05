@@ -1,20 +1,16 @@
 package de.feu.plib.processor.handler;
 
-import de.feu.plib.dao.procedures.types.PropStringObjT;
+import de.feu.plib.dao.procedures.types.PropNumberObjT;
+import de.feu.plib.dao.procedures.types.PropertyObjectT;
 import de.feu.plib.processor.analyser.BaseIrdi;
 import de.feu.plib.processor.analyser.EnrichedQuery;
 import de.feu.plib.dao.PlibDao;
 import de.feu.plib.processor.analyser.Irdi;
 import de.feu.plib.xml.catalogue.CatalogueType;
-import de.feu.plib.xml.catalogue.ItemType;
-import de.feu.plib.xml.catalogue.PropertyValueType;
-import de.feu.plib.xml.value.*;
-import org.apache.commons.lang.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -52,7 +48,7 @@ public class SimpleQueryService extends AbstractQueryService {
 
         if (objectsExistInDatabase()) {
             LOGGER.trace("Objects exist in database");
-            List<List<PropStringObjT>> listOfItems = loadItems();
+            List<List<PropertyObjectT>> listOfItems = loadItems();
             LOGGER.trace("Items loaded from db");
 
             List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
@@ -85,7 +81,7 @@ public class SimpleQueryService extends AbstractQueryService {
 
         if (objectsExistInDatabase(irdi)) {
             LOGGER.trace("Objects exist in database");
-            List<List<PropStringObjT>> listOfItems = loadItems(irdi);
+            List<List<PropertyObjectT>> listOfItems = loadItems(irdi);
             LOGGER.trace("Items loaded from db");
 
             List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
@@ -110,7 +106,7 @@ public class SimpleQueryService extends AbstractQueryService {
 
         if (objectsExistInDatabase()) {
             LOGGER.trace("Objects exist in database");
-            List<List<PropStringObjT>> listOfItems = loadItems();
+            List<List<PropertyObjectT>> listOfItems = loadItems();
             LOGGER.trace("Items loaded from db");
 
             List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
@@ -144,20 +140,26 @@ public class SimpleQueryService extends AbstractQueryService {
      *
      * @return a list of all items
      */
-    private List<List<PropStringObjT>> loadItems() {
+    private List<List<PropertyObjectT>> loadItems() {
         List<String> listOfExternalIds = loadExternalIds();
-        // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
-        List<List<PropStringObjT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
-        //List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
+        // TODO load all other item database tables (DO_STRING, DO_NUMBER, DO_REFERENCE ...)
+        List<List<PropertyObjectT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
+        // TODO currently we ignore other types, should be merged if we have testdata
+        //List<List<PropertyObjectT>> numberPropertyList = plibDao.loadNumberPropertiesBy(listOfExternalIds);
+
+        //stringPropertyList.addAll(numberPropertyList);
 
         return stringPropertyList;
     }
 
-    private List<List<PropStringObjT>> loadItems(Irdi irdi) {
+    private List<List<PropertyObjectT>> loadItems(Irdi irdi) {
         List<String> listOfExternalIds = loadExternalIds(irdi);
-        // TODO load all other item database tables (DO_STRING, DO_NUMBER ...)
-        List<List<PropStringObjT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
-        //List<List<Map<String, Object>>> numberPropertyList = plibDao.loadNumberPropertiesByExternalIds(listOfExternalIds);
+        // TODO load all other item database tables (DO_STRING, DO_NUMBER, DO_REFERENCE ...)
+        List<List<PropertyObjectT>> stringPropertyList = plibDao.loadStringPropertiesBy(listOfExternalIds);
+        // TODO currently we ignore other types, should be merged if we have testdata
+        //List<List<PropertyObjectT>> numberPropertyList = plibDao.loadNumberPropertiesBy(listOfExternalIds);
+
+        //stringPropertyList.addAll(numberPropertyList);
 
         return stringPropertyList;
     }
