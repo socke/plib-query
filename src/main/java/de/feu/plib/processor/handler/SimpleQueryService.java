@@ -128,29 +128,6 @@ public class SimpleQueryService extends AbstractQueryService {
         return catalogueType;
     }
 
-    /**
-     * This method does the projection by filtering the properties in the catalogue from the database by the
-     * given properties from the query.
-     * You can just call the method after you loaded all the data from the database into {@link #catalogueType},
-     * then all not defined properties will be deleted from the {@link #catalogueType}.
-     *
-     * Note: you can only remove items from Lists which you currently iterate when using {@link Iterator}
-     */
-    private void filterCatalogueByPropertyIrdis() {
-        List<String> filteredProperties = getEnrichedQuery().getQuery().getPropertyRef();
-
-        if (null != filteredProperties) {
-            List<ItemType> itemTypes = catalogueType.getItem();
-            for (Iterator<ItemType> item = itemTypes.iterator(); item.hasNext(); ) {
-                for (Iterator<PropertyValueType> prop = item.next().getPropertyValue().iterator(); prop.hasNext(); ) {
-                    if (!filteredProperties.contains(prop.next().getPropertyRef())) {
-                        prop.remove();
-                    }
-                }
-            }
-        }
-    }
-
 
     /**
      * Purpose: Method load all konkrete Item instances.

@@ -11,10 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Abstract Query Service class which holds template functionality for all Query Services
@@ -371,5 +368,28 @@ public abstract class AbstractQueryService {
      */
     protected void mapItemDataToCatalogue(List<List<PropStringObjT>> listOfItems, List<Map<String, Object>> propertyTypesAndValues) {
         mapItemDataToCatalogue(listOfItems, propertyTypesAndValues, getEnrichedQuery().getIrdi());
+    }
+
+    /**
+     * This method does the projection by filtering the properties in the catalogue from the database by the
+     * given properties from the query.
+     * You can just call the method after you loaded all the data from the database into {@link #catalogueType},
+     * then all not defined properties will be deleted from the {@link #catalogueType}.
+     *
+     * Note: you can only remove items from Lists which you currently iterate when using {@link java.util.Iterator}
+     */
+    protected void filterCatalogueByPropertyIrdis() {
+        List<String> filteredProperties = getEnrichedQuery().getQuery().getPropertyRef();
+
+        if (null != filteredProperties) {
+            List<ItemType> itemTypes = catalogueType.getItem();
+            for (Iterator<ItemType> item = itemTypes.iterator(); item.hasNext(); ) {
+                for (Iterator<PropertyValueType> prop = item.next().getPropertyValue().iterator(); prop.hasNext(); ) {
+                    if (!filteredProperties.contains(prop.next().getPropertyRef())) {
+                        prop.remove();
+                    }
+                }
+            }
+        }
     }
 }

@@ -65,7 +65,28 @@ public class ParametricQueryService extends AbstractQueryService {
     }
 
     public CatalogueType loadDataWithProjection() {
-        return loadDataWithIRDIOnly();
+        catalogueType = new CatalogueType();
+
+        if (objectsExistInDatabase()) {
+            LOGGER.trace("Objects exist in database");
+            List<List<PropStringObjT>> listOfItems = loadItems();
+            LOGGER.trace("Items loaded from db");
+
+            List<String> propertyIds = getPropertyIdsFromProperties(listOfItems);
+            LOGGER.trace("property ids grabbed from properties");
+
+            List<Map<String, Object>> propertyTypesAndValues = loadTypesAndUnitsFromPropertyIds(propertyIds, plibDao);
+            LOGGER.trace("property types and values loaded from db");
+
+            // now we must put all that data together, items + irdi + properties of the items + their irdis + all
+            // properties and types. These must be mapped to the catalogue model
+            mapItemDataToCatalogue(listOfItems, propertyTypesAndValues);
+
+            filterResultByQueryExpression();
+
+            filterCatalogueByPropertyIrdis();
+        }
+        return catalogueType;
     }
 
     private void filterResultByQueryExpression() {
@@ -85,43 +106,68 @@ public class ParametricQueryService extends AbstractQueryService {
 
     private void filterSubset(CharacteristicDataQueryExpressionType qe) {
         if (qe.getSubset() != null) {
-
+            // TODO implement it
         }
     }
 
     private void filterStringSize(CharacteristicDataQueryExpressionType qe) {
         if (qe.getStringSize() != null) {
-
+            // TODO implement it
         }
     }
 
     private void filterStringPattern(CharacteristicDataQueryExpressionType qe) {
         if (qe.getStringPattern() != null) {
+            String pattern = qe.getStringPattern().getPattern();
+            PropertyReferenceType propertyReference = qe.getRange().getPropertyReference();
+            checkIfPatternMatches(pattern, propertyReference);
+        }
+    }
 
+    private void checkIfPatternMatches(String pattern, PropertyReferenceType propertyReference) {
+        List<ItemType> itemTypes = catalogueType.getItem();
+        for (Iterator<ItemType> itemIterator = itemTypes.iterator(); itemIterator.hasNext(); ) {
+            boolean propertyFound = false;
+            boolean patternMatches = false;
+
+            ItemType currentItem = itemIterator.next();
+            for (Iterator<PropertyValueType> propertyIterator = currentItem.getPropertyValue().iterator(); propertyIterator.hasNext(); ) {
+                // check if property matches
+                PropertyValueType valueType = propertyIterator.next();
+                if (valueType.getPropertyRef().equals(propertyReference.getPropertyRef())) {
+                    propertyFound = true;
+                    if (valueType.getStringValue().getValue().matches(pattern)) {
+                        patternMatches = true;
+                    }
+                }
+            }
+            if (!propertyFound || !patternMatches) {
+                itemIterator.remove();
+            }
         }
     }
 
     private void filterOr(CharacteristicDataQueryExpressionType qe) {
         if (qe.getOr() != null) {
-
+            // TODO implement it
         }
     }
 
     private void filterNot(CharacteristicDataQueryExpressionType qe) {
         if (qe.getNot() != null) {
-
+            // TODO implement it
         }
     }
 
     private void filterDataEnvironment(CharacteristicDataQueryExpressionType qe) {
         if (qe.getDataEnvironment() != null) {
-
+            // TODO implement it
         }
     }
 
     private void filterCardinality(CharacteristicDataQueryExpressionType qe) {
         if (qe.getCardinality() != null) {
-
+            // TODO implement it
         }
     }
 
@@ -138,7 +184,6 @@ public class ParametricQueryService extends AbstractQueryService {
             List<CharacteristicDataQueryExpressionType> operands = qe.getAnd().getOperand();
             for (CharacteristicDataQueryExpressionType queryExpressionType : operands) {
                 filterRange(queryExpressionType);
-                //allOperandsEvaluatedToTrue = operandIsInRange(queryExpressionType);
                 filterAnd(queryExpressionType);
             }
             if (allOperandsEvaluatedToTrue) {
@@ -146,14 +191,6 @@ public class ParametricQueryService extends AbstractQueryService {
             }
 
         }
-    }
-
-    private boolean operandIsInRange(CharacteristicDataQueryExpressionType qe) {
-        if (qe.getRange() != null) {
-            PropertyReferenceType propertyReference = qe.getRange().getPropertyReference();
-            return isInRangeOfCatalogue(qe.getRange().getMinValue(), qe.getRange().getMaxValue(), propertyReference, qe.getRange().isIsInclusive());
-        }
-        return false;
     }
 
     private boolean isInRangeOfCatalogue(Float minValue, Float maxValue, PropertyReferenceType propertyReference, boolean isInclusive) {
