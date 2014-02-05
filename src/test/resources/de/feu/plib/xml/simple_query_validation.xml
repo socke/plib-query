@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<qy:query xsi:schemaLocation="urn:iso:std:iso:ts:29002:-31:ed-1:tech:xml-schema:query query.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cat="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:catalogue" xmlns:val="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:value" xmlns:qy="urn:iso:std:iso:ts:29002:-31:ed-1:tech:xml-schema:query" xmlns:bas="urn:iso:std:iso:ts:29002:-4:ed-1:tech:xml-schema:basic">
+    <!-- Validation Query, sends known items and checks if properties are correct. -->
+    <cat:item class_ref="0173-1#01-BAD803#2" >
+        <cat:property_value property_ref="0173-1#02-AAA762#1">
+            <val:measure_single_number_value>
+                <val:real_value>2.0</val:real_value>
+            </val:measure_single_number_value>
+        </cat:property_value>
+        <cat:property_value property_ref="0173-1#02-AAB011#1">
+            <val:measure_single_number_value>
+                <val:real_value>1.0</val:real_value>
+            </val:measure_single_number_value>
+        </cat:property_value>
+    </cat:item>
+</qy:query>

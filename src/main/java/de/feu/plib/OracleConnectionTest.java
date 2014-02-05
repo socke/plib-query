@@ -30,7 +30,7 @@ public class OracleConnectionTest {
 
 		try {
 			connection = DriverManager.getConnection(
-					"jdbc:oracle:thin:@172.16.13.130:1521:XE", "admin", "admin");
+					"jdbc:oracle:thin:@172.16.13.130:1521:XE", "admin", "plib");
 
 			Statement statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery("SELECT name FROM DE_COMPANY");

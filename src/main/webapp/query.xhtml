@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:t="http://myfaces.apache.org/tomahawk">
+
+<h:head>
+    <title>Query Test Page</title>
+    <h:outputStylesheet library="css" name="style.css"  />
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=xml" type="text/javascript"></script>
+</h:head>
+
+<h:body>
+    <h:form id="queryform" enctype="multipart/form-data">
+        <h1>Query Test Page</h1>
+        <h:messages/>
+
+        <h:panelGroup layout="block" styleClass="description">Please provide an ISO-29002-31 XML Query file:</h:panelGroup>
+
+        <h:panelGroup layout="block" id="upload" styleClass="upload">
+            <t:inputFileUpload value="#{queryBean.uploadedFile}" />
+        </h:panelGroup>
+        <h:panelGroup layout="block" id="buttons" styleClass="buttons">
+            <h:commandButton value="Send Query" type="submit" action="#{queryBean.sendQuery}"></h:commandButton>
+        </h:panelGroup>
+
+        <h:panelGroup layout="block" styleClass="description">Query submitted:</h:panelGroup>
+        <h:panelGroup layout="block" id="querysend"><pre class="prettyprint">#{queryBean.query}</pre></h:panelGroup>
+
+        <h:panelGroup layout="block" styleClass="description">Response:</h:panelGroup>
+
+        <h:panelGroup layout="block" id="response">
+          <pre class="prettyprint">#{queryBean.response}</pre>
+        </h:panelGroup>
+
+
+    </h:form>
+</h:body>
+
+</html>

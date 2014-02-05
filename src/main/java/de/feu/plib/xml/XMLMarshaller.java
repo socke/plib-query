@@ -1,5 +1,7 @@
 package de.feu.plib.xml;
 
+import de.feu.plib.xml.catalogue.CatalogueType;
+
 /**
  * Capsulates the marshalling and unmarshalling of XML files. You can use it for any type of JAXB
  * annotated files as this is a generic un-/marshaller.
@@ -29,18 +31,16 @@ public interface XMLMarshaller {
     public <T> T unmarshallXML(String xmlString, Class<T> clazz);
 
     /**
-     * Marshalls the given type parameter to an corresponding xml.
+     * Marshalls the given CatalogueType parameter to an corresponding xml.
      * 
      * <p><strong>Usage example:</strong></p>
      * <pre>
      * String catalogue = marshaller.marshall(new CatalogueItem());
      * </pre>
-     * 
-     * @param <T> the type of the given
-     * 
+     *
      * @param catalogue type to convert to xml
      * @return the string holding the converted xml
      */
-    public <T> String marshall(T catalogue);
+    public String marshall(CatalogueType catalogue);
 
 }

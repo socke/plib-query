@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<qy:query xsi:schemaLocation="urn:iso:std:iso:ts:29002:-31:ed-1:tech:xml-schema:query query.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cat="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:catalogue" xmlns:val="urn:iso:std:iso:ts:29002:-10:ed-1:tech:xml-schema:value" xmlns:qy="urn:iso:std:iso:ts:29002:-31:ed-1:tech:xml-schema:query" xmlns:bas="urn:iso:std:iso:ts:29002:-4:ed-1:tech:xml-schema:basic">
-<!-- Query for all Items belonging to Class with IRDI 0173-1#01-AAA352#4 "Schraubendreher" -->
-    <qy:class_ref>0173-1#01-AAA352#4</qy:class_ref>
-</qy:query>
