@@ -10,4 +10,4 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.2.0 -Dpackaging=jar -Dfile=lib/ojdbc6.jar 
-          - mvn clean install
+          - mvn clean install -Dmaven.test.skip=true
