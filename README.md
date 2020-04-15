@@ -1,3 +1,5 @@
+![CI Build](https://github.com/socke/plib-query/workflows/CI%20Build/badge.svg)
+
 # PLIB query
 
 Howto run and install plib-query project:
