@@ -11,3 +11,7 @@ mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.
 
 NOTE: It is important that the -Dfile point to the exact file, 
 otherwise the jar will not be correctly installed into the maven repository. Maven will not tell you that it is not correctly installed!!!
+
+## PLIB oracle database
+
+This example project can only work together with the other Master Thesis results as it is based on that. This is a PLIB database based on Oracle. This dump is too huge to put in here so if you need that for testing, please contact me. 
