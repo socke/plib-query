@@ -1,3 +1,5 @@
+# PLIB query
+
 Howto run and install plib-query project:
 
 First you need the oracle jdbc driver. Unfortunately these are not available in public maven repositories. 
